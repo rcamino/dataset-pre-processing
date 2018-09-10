@@ -55,6 +55,11 @@ CLASSES = [
     "malignant",
 ]
 
+CLASS_TO_INDEX = {
+    "B": 0,
+    "M": 1,
+}
+
 
 def breast_transform(input_path, features_path, labels_path, metadata_path):
     metadata = create_metadata(VARIABLES[2:],
@@ -77,19 +82,11 @@ def breast_transform(input_path, features_path, labels_path, metadata_path):
 
         assert len(values) == len(VARIABLES), str((len(values), len(VARIABLES)))
 
-        if values[1] == "M":
-            label = 1
-        elif values[1] == "B":
-            label = 0
-        else:
-            raise Exception("Invalid class.")
-
         for j, value in enumerate(values[2:]):
             value = float(value)
             features[i, j] = value
 
-        # the class needs to be transformed
-        labels[i] = label
+        labels[i] = CLASS_TO_INDEX[values[1]]
 
         i += 1
 

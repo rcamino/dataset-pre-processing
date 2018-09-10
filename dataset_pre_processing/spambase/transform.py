@@ -102,7 +102,6 @@ def spambase_transform(input_path, features_path, labels_path, metadata_path):
             value = float(value)
             features[i, j] = value
 
-        # the class needs to be transformed
         labels[i] = int(values[-1])
 
         i += 1

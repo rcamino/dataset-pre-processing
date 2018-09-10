@@ -5,7 +5,7 @@ import json
 
 import numpy as np
 
-from dataset_pre_processing.metadata import create_metadata
+from dataset_pre_processing.metadata import create_metadata, create_class_to_index
 
 from sklearn.preprocessing.data import MinMaxScaler
 
@@ -25,7 +25,6 @@ VARIABLES = [
     "capital-loss",
     "hours-per-week",
     "native-country",
-    "class"
 ]
 
 TYPES = {
@@ -43,7 +42,6 @@ TYPES = {
     "capital-loss": "numerical",
     "hours-per-week": "numerical",
     "native-country": "categorical",
-    "class": "class"
 }
 
 VALUES = {
@@ -169,6 +167,8 @@ CLASSES = [
     ">50K"
 ]
 
+CLASS_TO_INDEX = create_class_to_index(CLASSES)
+
 NUM_SAMPLES = {
     False: {  # all rows
         "train": 32561,
@@ -245,7 +245,8 @@ def adult_transform_file(input_file, num_samples, num_features, value_to_index, 
 
         # if there are missing values the ignore missing flag is set then ignore the row
         if not missing_values or not ignore_missing:
-            for variable, value in zip(VARIABLES, values):
+            # iterate variable values (except the last one)
+            for variable, value in zip(VARIABLES, values[:-1]):
                 if TYPES[variable] == "numerical":
                     if value == "?" or value == "":
                         value = np.nan
@@ -260,8 +261,9 @@ def adult_transform_file(input_file, num_samples, num_features, value_to_index, 
                         assert value in VALUES[variable],\
                             "'{}' is not a valid value for '{}'".format(value, variable)
                         features[i, value_to_index[variable][value]] = 1.0
-                elif TYPES[variable] == "class":
-                    labels[i] = (1 if value == ">50K" else 0)
+
+            # the last value is the class
+            labels[i] = CLASS_TO_INDEX[values[-1]]
 
             i += 1
 

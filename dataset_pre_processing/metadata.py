@@ -75,3 +75,7 @@ def create_metadata(variables, variable_types, categorical_values={}, num_sample
         metadata["classes"] = classes
 
     return metadata
+
+
+def create_class_to_index(classes):
+    return dict([(c, i) for i, c in enumerate(classes)])

@@ -8,8 +8,7 @@ import pandas as pd
 
 from scipy.sparse import csr_matrix, save_npz
 
-from dataset_pre_processing.metadata import create_metadata
-
+from dataset_pre_processing.metadata import create_metadata, create_class_to_index
 
 VARIABLES = [
     "parents",
@@ -31,7 +30,7 @@ CLASSES = [
     "spec_prior"
 ]
 
-CLASS_TO_INDEX = dict([(c, i) for i, c in enumerate(CLASSES)])
+CLASS_TO_INDEX = create_class_to_index(CLASSES)
 
 
 def nursery_transform(input_path, features_path, labels_path, metadata_path):
