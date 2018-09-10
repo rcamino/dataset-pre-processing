@@ -5,10 +5,12 @@ import json
 
 import numpy as np
 
+from dataset_pre_processing.metadata import create_metadata
+
 from sklearn.preprocessing.data import MinMaxScaler
 
 
-FIELDS = [
+VARIABLES = [
     "age",
     "workclass",
     "fnlwgt",
@@ -179,62 +181,13 @@ NUM_SAMPLES = {
 }
 
 
-def create_metadata(num_samples_train, num_samples_test):
-    continuous_variables = []
-    categorical_variables = []
-    for variable in FIELDS:
-        variable_type = TYPES[variable]
-        if variable_type == "numerical":
-            continuous_variables.append(variable)
-        elif variable_type == "categorical":
-            categorical_variables.append(variable)
-
-    categorical_variables = sorted(categorical_variables)
-    continuous_variables = sorted(continuous_variables)
-
-    feature_number = 0
-    value_to_index = {}
-    index_to_value = []
-    variable_sizes = []
-    variable_types = []
-
-    for variable in categorical_variables:
-        variable_types.append(TYPES[variable])
-        values = sorted(VALUES[variable])
-        variable_sizes.append(len(values))
-        value_to_index[variable] = {}
-        for value in values:
-            index_to_value.append((variable, value))
-            value_to_index[variable][value] = feature_number
-            feature_number += 1
-
-    for variable in continuous_variables:
-        variable_types.append(TYPES[variable])
-        variable_sizes.append(1)
-        value_to_index[variable] = feature_number
-        feature_number += 1
-
-    num_features = feature_number
-
-    return {
-        "variables": categorical_variables + continuous_variables,
-        "variable_sizes": variable_sizes,
-        "variable_types": variable_types,
-        "index_to_value": index_to_value,
-        "value_to_index": value_to_index,
-        "num_samples": num_samples_train + num_samples_test,
-        "num_features": num_features,
-        "classes": CLASSES
-    }
-
-
 def adult_transform(input_train_path, input_test_path, features_train_path, features_test_path, labels_train_path,
                     labels_test_path, metadata_path, ignore_missing):
 
     num_samples_train = NUM_SAMPLES[ignore_missing]["train"]
     num_samples_test = NUM_SAMPLES[ignore_missing]["test"]
 
-    metadata = create_metadata(num_samples_train, num_samples_test)
+    metadata = create_metadata(VARIABLES, TYPES, VALUES, num_samples_train + num_samples_test, CLASSES)
 
     # transform train
     train_file = open(input_train_path, "r")
@@ -268,6 +221,9 @@ def adult_transform(input_train_path, input_test_path, features_train_path, feat
     np.save(features_test_path, features_test)
     np.save(labels_test_path, labels_test)
 
+    metadata["features_min"] = scaler.data_min_.tolist()
+    metadata["features_max"] = scaler.data_max_.tolist()
+
     with open(metadata_path, "w") as metadata_file:
         json.dump(metadata, metadata_file)
 
@@ -289,7 +245,7 @@ def adult_transform_file(input_file, num_samples, num_features, value_to_index, 
 
         # if there are missing values the ignore missing flag is set then ignore the row
         if not missing_values or not ignore_missing:
-            for variable, value in zip(FIELDS, values):
+            for variable, value in zip(VARIABLES, values):
                 if TYPES[variable] == "numerical":
                     if value == "?" or value == "":
                         value = np.nan

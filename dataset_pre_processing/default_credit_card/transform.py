@@ -6,6 +6,8 @@ import json
 
 import numpy as np
 
+from dataset_pre_processing.metadata import create_metadata
+
 from sklearn.preprocessing.data import MinMaxScaler
 
 
@@ -55,63 +57,15 @@ CLASSES = [
 ]
 
 
-def create_metadata(fields):
-    continuous_variables = []
-    categorical_variables = []
-    for variable in fields:
-        variable_type = TYPES[variable]
-        if variable_type == "numerical":
-            continuous_variables.append(variable)
-        elif variable_type == "categorical":
-            categorical_variables.append(variable)
-
-    categorical_variables = sorted(categorical_variables)
-    continuous_variables = sorted(continuous_variables)
-
-    feature_number = 0
-    value_to_index = {}
-    index_to_value = []
-    variable_sizes = []
-    variable_types = []
-
-    for variable in categorical_variables:
-        variable_types.append(TYPES[variable])
-        values = sorted(VALUES[variable])
-        variable_sizes.append(len(values))
-        value_to_index[variable] = {}
-        for value in values:
-            index_to_value.append((variable, value))
-            value_to_index[variable][value] = feature_number
-            feature_number += 1
-
-    for variable in continuous_variables:
-        variable_types.append(TYPES[variable])
-        variable_sizes.append(1)
-        value_to_index[variable] = feature_number
-        feature_number += 1
-
-    num_features = feature_number
-
-    return {
-        "variables": categorical_variables + continuous_variables,
-        "variable_sizes": variable_sizes,
-        "variable_types": variable_types,
-        "index_to_value": index_to_value,
-        "value_to_index": value_to_index,
-        "num_features": num_features,
-        "num_samples": NUM_SAMPLES,
-        "classes": CLASSES
-    }
-
-
 def default_credit_card_transform(input_path, features_path, labels_path, metadata_path):
     input_file = open(input_path, "r")
     reader = csv.DictReader(input_file)
 
-    fields = set(reader.fieldnames)
-    fields.remove("ID")
-    fields.remove("default payment next month")
-    metadata = create_metadata(fields)
+    variables = set(reader.fieldnames)
+    variables.remove("ID")
+    variables.remove("default payment next month")
+
+    metadata = create_metadata(variables, TYPES, VALUES, NUM_SAMPLES, CLASSES)
 
     features = np.zeros((metadata["num_samples"], metadata["num_features"]), dtype=np.float32)
     labels = np.zeros(metadata["num_samples"], dtype=np.int32)

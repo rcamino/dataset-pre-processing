@@ -9,6 +9,8 @@ import numpy as np
 
 from scipy.sparse import csr_matrix, save_npz
 
+from dataset_pre_processing.metadata import create_metadata
+
 
 MODES = ["train", "test"]
 
@@ -22,20 +24,20 @@ def ipinyou_transform(directory):
 
 
 def ipinyou_transform_campaign(directory, campaign):
-        print("Extracting metadata...")
+    print("Extracting metadata...")
 
-        metadata = ipinyou_extract_metadata(directory, campaign)
+    metadata = ipinyou_extract_metadata(directory, campaign)
 
-        with open(os.path.join(directory, str(campaign), "metadata.js"), "w") as metadata_file:
-            json.dump(metadata, metadata_file)
+    with open(os.path.join(directory, str(campaign), "metadata.json"), "w") as metadata_file:
+        json.dump(metadata, metadata_file)
 
-        for mode in MODES:
-            print("Transforming mode:", mode)
-            ipinyou_transform_campaign_mode(directory, campaign, mode, metadata)
+    for mode in MODES:
+        print("Transforming mode:", mode)
+        ipinyou_transform_campaign_mode(directory, campaign, mode, metadata)
 
 
 def ipinyou_extract_metadata(directory, campaign):
-    values_by_variable = None
+    categorical_values = None
     variables = None
 
     for mode in MODES:
@@ -43,47 +45,25 @@ def ipinyou_extract_metadata(directory, campaign):
         input_file = open(input_path, "r")
         reader = csv.DictReader(input_file, delimiter="\t")
 
-        if values_by_variable is None or variables is None:
+        if categorical_values is None or variables is None:
             variables = set(reader.fieldnames)
             variables.remove("click")
             variables.remove("payprice")
             variables = sorted(variables)
 
-            values_by_variable = {}
-
+            categorical_values = {}
             for variable in variables:
-                values_by_variable[variable] = set()
+                categorical_values[variable] = set()
 
         print("Extracting metadata from mode:", mode)
         for row in reader:
             for variable in variables:
                 variable_value = row[variable]
-                values_by_variable[variable].add(variable_value)
+                categorical_values[variable].add(variable_value)
 
         input_file.close()
 
-    variable_sizes = []
-    index_to_value = []
-    value_to_index = {}
-    feature_index = 0
-    for variable in variables:
-        variable_values = sorted(values_by_variable[variable])
-        variable_sizes.append(len(variable_values))
-        value_to_index[variable] = {}
-        for variable_value in variable_values:
-            value_to_index[variable][variable_value] = feature_index
-            index_to_value.append((variable, variable_value))
-            feature_index += 1
-
-    metadata = {
-        "variables": variables,
-        "variable_sizes": variable_sizes,
-        "index_to_value": index_to_value,
-        "value_to_index": value_to_index,
-        "num_features": feature_index
-    }
-
-    return metadata
+    return create_metadata(variables, ["categorical" for _ in variables], categorical_values)
 
 
 def ipinyou_transform_campaign_mode(directory, campaign, mode, metadata):

@@ -8,6 +8,8 @@ import numpy as np
 
 from scipy.sparse import csr_matrix, save_npz
 
+from dataset_pre_processing.metadata import create_metadata
+
 
 def uscensus_transform(input_path, output_path, metadata_path):
     input_file = open(input_path, "r")
@@ -16,9 +18,9 @@ def uscensus_transform(input_path, output_path, metadata_path):
     variables = sorted(reader.fieldnames)
     variables.remove("caseid")
 
-    values_by_variable = {}
+    categorical_values = {}
     for variable in variables:
-        values_by_variable[variable] = set()
+        categorical_values[variable] = set()
 
     print("Counting values...")
     for row_number, row in enumerate(reader):
@@ -27,42 +29,21 @@ def uscensus_transform(input_path, output_path, metadata_path):
 
         for variable in variables:
             value = row[variable]
-            values_by_variable[variable].add(value)
+            categorical_values[variable].add(value)
 
     print("Saving metadata...")
 
-    feature_number = 0
-    index_to_value = []
-    value_to_index = {}
-    variable_sizes = []
-    for variable in variables:
-        values = sorted(values_by_variable[variable])
-        variable_sizes.append(len(values))
-        value_to_index[variable] = {}
-        for value in values:
-            index_to_value.append((variable, value))
-            value_to_index[variable][value] = feature_number
-            feature_number += 1
-
     num_samples = row_number + 1
-    num_features = feature_number
 
-    metadata = {
-        "variables": variables,
-        "variable_sizes": variable_sizes,
-        "index_to_value": index_to_value,
-        "value_to_index": value_to_index,
-        "num_samples": num_samples,
-        "num_features": num_features
-    }
+    metadata = create_metadata(variables,
+                               ["categorical" for _ in variables],
+                               categorical_values,
+                               num_samples)
 
     with open(metadata_path, "w") as metadata_file:
         json.dump(metadata, metadata_file)
 
-    input_file.close()
-
-    input_file = open(input_path, "r")
-    reader = csv.DictReader(input_file)
+    input_file.seek(0)
 
     ones = []
     rows = []
@@ -76,13 +57,13 @@ def uscensus_transform(input_path, output_path, metadata_path):
 
         for variable in variables:
             value = row[variable]
-            feature_number = value_to_index[variable][value]
+            feature_number = metadata["value_to_index"][variable][value]
 
             ones.append(1)
             rows.append(row_number)
             cols.append(feature_number)
 
-    output = csr_matrix((ones, (rows, cols)), shape=(num_samples, num_features), dtype=np.uint8)
+    output = csr_matrix((ones, (rows, cols)), shape=(num_samples, metadata["num_features"]), dtype=np.uint8)
 
     save_npz(output_path, output)
 

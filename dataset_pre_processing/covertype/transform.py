@@ -5,6 +5,8 @@ import json
 
 import numpy as np
 
+from dataset_pre_processing.metadata import create_metadata
+
 from sklearn.preprocessing.data import MinMaxScaler
 
 
@@ -110,47 +112,8 @@ CLASSES = [
 ]
 
 
-def create_metadata():
-    feature_number = 0
-    value_to_index = {}
-    index_to_value = []
-    variable_sizes = []
-    variable_types = []
-
-    for variable in VARIABLES:
-        variable_type = TYPES[variable]
-        variable_types.append(variable_type)
-
-        if variable_type == "numerical":
-            variable_sizes.append(1)
-            value_to_index[variable] = feature_number
-            feature_number += 1
-        elif variable_type == "categorical":
-            values = sorted(VALUES[variable])
-            variable_sizes.append(len(values))
-            value_to_index[variable] = {}
-            for value in values:
-                index_to_value.append((variable, value))
-                value_to_index[variable][value] = feature_number
-                feature_number += 1
-
-    num_samples = sum(NUM_SAMPLES)
-    num_features = feature_number
-
-    return {
-        "variables": VARIABLES,
-        "variable_sizes": variable_sizes,
-        "variable_types": variable_types,
-        "index_to_value": index_to_value,
-        "value_to_index": value_to_index,
-        "num_samples": num_samples,
-        "num_features": num_features,
-        "classes": CLASSES
-    }
-
-
 def covertype_transform(input_path, features_path, labels_path, metadata_path):
-    metadata = create_metadata()
+    metadata = create_metadata(VARIABLES, TYPES, VALUES, sum(NUM_SAMPLES), CLASSES)
 
     input_file = open(input_path, "r")
 

@@ -8,8 +8,10 @@ import pandas as pd
 
 from scipy.sparse import csr_matrix, save_npz
 
+from dataset_pre_processing.metadata import create_metadata
 
-FIELDS = [
+
+VARIABLES = [
     "parents",
     "has_nurs",
     "form",
@@ -33,44 +35,22 @@ CLASS_TO_INDEX = dict([(c, i) for i, c in enumerate(CLASSES)])
 
 
 def nursery_transform(input_path, features_path, labels_path, metadata_path):
-    df = pd.read_csv(input_path, names=FIELDS)
+    df = pd.read_csv(input_path, names=VARIABLES)
 
     variables = sorted(df.columns)
     variables.remove("class")
 
-    values_by_variable = {}
+    categorical_values = {}
     for variable in variables:
-        values_by_variable[variable] = df[variable].unique()
-
-    feature_number = 0
-    index_to_value = []
-    value_to_index = {}
-    variable_sizes = []
-    variable_types = []
-
-    for variable in variables:
-        variable_types.append("categorical")
-        values = sorted(values_by_variable[variable])
-        variable_sizes.append(len(values))
-        value_to_index[variable] = {}
-        for value in values:
-            index_to_value.append((variable, value))
-            value_to_index[variable][value] = feature_number
-            feature_number += 1
+        categorical_values[variable] = df[variable].unique()
 
     num_samples = len(df)
-    num_features = feature_number
 
-    metadata = {
-        "variables": variables,
-        "variable_sizes": variable_sizes,
-        "variable_types": variable_types,
-        "index_to_value": index_to_value,
-        "value_to_index": value_to_index,
-        "num_features": num_features,
-        "num_samples": num_samples,
-        "classes": CLASSES
-    }
+    metadata = create_metadata(VARIABLES,
+                               ["categorical" for _ in VARIABLES],
+                               categorical_values,
+                               num_samples,
+                               CLASSES)
 
     with open(metadata_path, "w") as metadata_file:
         json.dump(metadata, metadata_file)
@@ -86,13 +66,13 @@ def nursery_transform(input_path, features_path, labels_path, metadata_path):
 
         for variable in variables:
             value = row[variable]
-            feature_number = value_to_index[variable][value]
+            feature_number = metadata["value_to_index"][variable][value]
 
             ones.append(1)
             rows.append(row_number)
             cols.append(feature_number)
 
-    output = csr_matrix((ones, (rows, cols)), shape=(num_samples, num_features), dtype=np.uint8)
+    output = csr_matrix((ones, (rows, cols)), shape=(num_samples, metadata["num_features"]), dtype=np.uint8)
 
     save_npz(features_path, output)
     np.save(labels_path, labels)

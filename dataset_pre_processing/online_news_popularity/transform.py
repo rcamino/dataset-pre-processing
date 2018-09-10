@@ -6,6 +6,8 @@ import json
 
 import numpy as np
 
+from dataset_pre_processing.metadata import create_metadata
+
 from sklearn.preprocessing.data import MinMaxScaler
 
 
@@ -80,65 +82,6 @@ VALUES = {
 }
 
 
-def create_metadata(fields):
-    continuous_variables = []
-    binary_variables = []
-    for variable in fields:
-        variable_type = TYPES[variable]
-        if variable_type == "numerical":
-            continuous_variables.append(variable)
-        if variable_type == "binary":
-            binary_variables.append(variable)
-
-    categorical_variables = sorted(list(VALUES.keys()))
-    binary_variables = sorted(binary_variables)
-    continuous_variables = sorted(continuous_variables)
-
-    feature_number = 0
-    value_to_index = {}
-    index_to_value = []
-    variable_sizes = []
-    variable_types = []
-
-    for variable in categorical_variables:
-        variable_types.append("categorical")
-        values = sorted(VALUES[variable])
-        variable_sizes.append(len(values))
-        value_to_index[variable] = {}
-        for value in values:
-            index_to_value.append((variable, value))
-            value_to_index[variable][value] = feature_number
-            feature_number += 1
-
-    for variable in binary_variables:
-        variable_types.append("categorical")
-        values = [0, 1]
-        variable_sizes.append(2)
-        value_to_index[variable] = {}
-        for value in values:
-            index_to_value.append((variable, value))
-            value_to_index[variable][value] = feature_number
-            feature_number += 1
-
-    for variable in continuous_variables:
-        variable_types.append("numerical")
-        variable_sizes.append(1)
-        value_to_index[variable] = feature_number
-        feature_number += 1
-
-    num_features = feature_number
-
-    return {
-        "variables": categorical_variables + binary_variables + continuous_variables,
-        "variable_sizes": variable_sizes,
-        "variable_types": variable_types,
-        "index_to_value": index_to_value,
-        "value_to_index": value_to_index,
-        "num_features": num_features,
-        "num_samples": NUM_SAMPLES,
-    }
-
-
 def read_binary(value):
     return int(float(value.strip()))
 
@@ -147,13 +90,14 @@ def online_news_popularity_transform(input_path, features_path, labels_path, met
     input_file = open(input_path, "r")
     reader = csv.DictReader(input_file)
 
-    reader.fieldnames = [field.strip() for field in reader.fieldnames]
+    reader.fieldnames = [variable.strip() for variable in reader.fieldnames]
 
-    fields = set(reader.fieldnames)
-    fields.remove("url")
-    fields.remove("timedelta")
-    fields.remove("shares")
-    metadata = create_metadata(fields)
+    variables = set(reader.fieldnames)
+    variables.remove("url")
+    variables.remove("timedelta")
+    variables.remove("shares")
+
+    metadata = create_metadata(variables, TYPES, VALUES, NUM_SAMPLES)
 
     features = np.zeros((metadata["num_samples"], metadata["num_features"]), dtype=np.float32)
     labels = np.zeros(metadata["num_samples"], dtype=np.float32)

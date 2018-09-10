@@ -10,6 +10,8 @@ import numpy as np
 
 from sklearn.preprocessing.data import MinMaxScaler
 
+from dataset_pre_processing.metadata import create_metadata
+
 
 ORIGINAL_VARIABLES = [
     "Date flow start",
@@ -109,28 +111,15 @@ def parse_row(line):
     return row
 
 
-def create_metadata(input_file):
-    numerical_variables = []
-    categorical_variables = []
+def read_binary(value):
+    return int(float(value.strip()))
+
+
+def netflow_create_metadata(input_file):
+    categorical_values = {}
     for variable in NEW_VARIABLES:
-        variable_type = TYPES[variable]
-        if variable_type == "numerical":
-            numerical_variables.append(variable)
-        if variable_type == "categorical":
-            categorical_variables.append(variable)
-
-    categorical_variables = sorted(categorical_variables)
-    numerical_variables = sorted(numerical_variables)
-
-    feature_number = 0
-    value_to_index = {}
-    index_to_value = []
-    variable_sizes = []
-    variable_types = []
-
-    values = {}
-    for variable in categorical_variables:
-        values[variable] = set()
+        if TYPES[variable] == "categorical":
+            categorical_values[variable] = set()
 
     num_samples = 0
     start_time = None
@@ -143,49 +132,20 @@ def create_metadata(input_file):
 
         for variable in NEW_VARIABLES:
             if TYPES[variable] == "categorical":
-                values[variable].add(row[variable])
+                categorical_values[variable].add(row[variable])
         num_samples += 1
         line = input_file.readline().strip()
 
-    for variable in categorical_variables:
-        variable_types.append("categorical")
-        variable_values = sorted(values[variable])
-        variable_sizes.append(len(variable_values))
-        value_to_index[variable] = {}
-        for value in variable_values:
-            index_to_value.append((variable, value))
-            value_to_index[variable][value] = feature_number
-            feature_number += 1
-
-    for variable in numerical_variables:
-        variable_types.append("numerical")
-        variable_sizes.append(1)
-        value_to_index[variable] = feature_number
-        feature_number += 1
-
-    num_features = feature_number
-
-    return {
-        "variables": categorical_variables + numerical_variables,
-        "variable_sizes": variable_sizes,
-        "variable_types": variable_types,
-        "index_to_value": index_to_value,
-        "value_to_index": value_to_index,
-        "num_features": num_features,
-        "num_samples": num_samples,
-        "start_time": start_time.strftime(DATE_FORMAT)
-    }
-
-
-def read_binary(value):
-    return int(float(value.strip()))
+    metadata = create_metadata(NEW_VARIABLES, TYPES, categorical_values, num_samples)
+    metadata["start_time"] = start_time.strftime(DATE_FORMAT)
+    return metadata
 
 
 def netflow_transform(input_path, features_path, labels_path, metadata_path):
     input_file = open(input_path, "r")
     input_file.readline()  # ignore malformed header
 
-    metadata = create_metadata(input_file)
+    metadata = netflow_create_metadata(input_file)
 
     input_file.seek(0)  # start again
     input_file.readline()  # ignore malformed header

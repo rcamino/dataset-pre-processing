@@ -5,6 +5,8 @@ import json
 
 import numpy as np
 
+from dataset_pre_processing.metadata import create_metadata
+
 from sklearn.preprocessing.data import MinMaxScaler
 
 
@@ -79,32 +81,8 @@ CLASSES = [
 ]
 
 
-def create_metadata():
-    feature_number = 0
-    variable_sizes = []
-    variable_types = []
-
-    for _ in VARIABLES:
-        variable_types.append("numerical")
-
-        variable_sizes.append(1)
-        feature_number += 1
-
-    num_samples = sum(NUM_SAMPLES)
-    num_features = feature_number
-
-    return {
-        "variables": VARIABLES,
-        "variable_sizes": variable_sizes,
-        "variable_types": variable_types,
-        "num_samples": num_samples,
-        "num_features": num_features,
-        "classes": CLASSES
-    }
-
-
 def spambase_transform(input_path, features_path, labels_path, metadata_path):
-    metadata = create_metadata()
+    metadata = create_metadata(VARIABLES, ["numerical" for _ in VARIABLES], {}, sum(NUM_SAMPLES), CLASSES)
 
     input_file = open(input_path, "r")
 
