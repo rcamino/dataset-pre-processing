@@ -141,7 +141,7 @@ def netflow_create_metadata(input_file):
     return metadata
 
 
-def netflow_transform(input_path, features_path, labels_path, metadata_path):
+def netflow_transform(input_path, features_path, metadata_path):
     input_file = open(input_path, "r")
     input_file.readline()  # ignore malformed header
 
@@ -153,7 +153,6 @@ def netflow_transform(input_path, features_path, labels_path, metadata_path):
     start_time = datetime.strptime(metadata["start_time"], DATE_FORMAT)
 
     features = np.zeros((metadata["num_samples"], metadata["num_features"]), dtype=np.float32)
-    labels = np.zeros(metadata["num_samples"], dtype=np.float32)
 
     # transform
     i = 0
@@ -184,7 +183,6 @@ def netflow_transform(input_path, features_path, labels_path, metadata_path):
     print("Features: ", features.shape[1])
 
     np.save(features_path, features)
-    np.save(labels_path, labels)
 
     input_file.close()
 
@@ -200,12 +198,11 @@ def main(args=None):
 
     options_parser.add_argument("input", type=str, help="Input Netflow data in text format.")
     options_parser.add_argument("features", type=str, help="Output features in numpy array format.")
-    options_parser.add_argument("labels", type=str, help="Output labels in numpy array format.")
     options_parser.add_argument("metadata", type=str, help="Metadata in json format.")
 
     options = options_parser.parse_args(args=args)
 
-    netflow_transform(options.input, options.features, options.labels, options.metadata)
+    netflow_transform(options.input, options.features, options.metadata)
 
 
 if __name__ == "__main__":
