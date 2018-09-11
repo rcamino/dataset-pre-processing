@@ -63,9 +63,17 @@ def ipinyou_extract_metadata(directory, campaign):
 
         input_file.close()
 
+    # remove variables with only one value or no value
+    used_variables = []
+    for variable in variables:
+        if len(categorical_values[variable]) < 2:
+            categorical_values.pop(variable)
+        else:
+            used_variables.append(variable)
+
     return create_metadata(
-        variables,
-        create_one_type_dictionary("categorical", variables),
+        used_variables,
+        create_one_type_dictionary("categorical", used_variables),
         categorical_values)
 
 
