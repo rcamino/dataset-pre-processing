@@ -79,9 +79,9 @@ def ipinyou_extract_metadata(directory, campaign):
 
 def ipinyou_transform_campaign_mode(directory, campaign, mode, metadata):
     input_file_path = os.path.join(directory, str(campaign), "{}-filtered.log.txt".format(mode))
-    features_file_path = os.path.join(directory, str(campaign), "{}-filtered.features.npz".format(mode))
-    click_file_path = os.path.join(directory, str(campaign), "{}-filtered.click.npy".format(mode))
-    price_file_path = os.path.join(directory, str(campaign), "{}-filtered.price.npy".format(mode))
+    features_file_path = os.path.join(directory, str(campaign), "features-{}.npz".format(mode))
+    click_file_path = os.path.join(directory, str(campaign), "click-{}.npy".format(mode))
+    price_file_path = os.path.join(directory, str(campaign), "price-{}.npy".format(mode))
 
     input_file = open(input_file_path, "r")
     reader = csv.DictReader(input_file, delimiter="\t")
