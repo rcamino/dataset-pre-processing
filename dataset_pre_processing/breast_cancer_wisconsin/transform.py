@@ -5,7 +5,7 @@ import json
 
 import numpy as np
 
-from dataset_pre_processing.metadata import create_metadata
+from dataset_pre_processing.metadata import create_metadata, create_one_type_dictionary
 
 from sklearn.preprocessing.data import MinMaxScaler
 
@@ -63,7 +63,7 @@ CLASS_TO_INDEX = {
 
 def breast_transform(input_path, features_path, labels_path, metadata_path):
     metadata = create_metadata(VARIABLES[2:],
-                               ["numerical" for _ in VARIABLES[2:]],
+                               create_one_type_dictionary("numerical", VARIABLES[2:]),
                                {},
                                sum(NUM_SAMPLES),
                                CLASSES)

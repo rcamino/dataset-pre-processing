@@ -9,7 +9,7 @@ import numpy as np
 
 from scipy.sparse import csr_matrix, save_npz
 
-from dataset_pre_processing.metadata import create_metadata
+from dataset_pre_processing.metadata import create_metadata, create_one_type_dictionary
 
 
 MODES = ["train", "test"]
@@ -63,7 +63,10 @@ def ipinyou_extract_metadata(directory, campaign):
 
         input_file.close()
 
-    return create_metadata(variables, ["categorical" for _ in variables], categorical_values)
+    return create_metadata(
+        variables,
+        create_one_type_dictionary("categorical", variables),
+        categorical_values)
 
 
 def ipinyou_transform_campaign_mode(directory, campaign, mode, metadata):

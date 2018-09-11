@@ -1,3 +1,7 @@
+def create_one_type_dictionary(variable_type, variables):
+    return dict([(variable, variable_type) for variable in variables])
+
+
 def types_to_sorted_lists(variable_types, variables=None):
     if variables is None:
         variables = variable_types.keys()

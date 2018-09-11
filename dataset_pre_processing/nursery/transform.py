@@ -8,7 +8,8 @@ import pandas as pd
 
 from scipy.sparse import csr_matrix, save_npz
 
-from dataset_pre_processing.metadata import create_metadata, create_class_to_index
+from dataset_pre_processing.metadata import create_metadata, create_class_to_index, create_one_type_dictionary
+
 
 VARIABLES = [
     "parents",
@@ -46,7 +47,7 @@ def nursery_transform(input_path, features_path, labels_path, metadata_path):
     num_samples = len(df)
 
     metadata = create_metadata(VARIABLES,
-                               ["categorical" for _ in VARIABLES],
+                               create_one_type_dictionary("categorical", VARIABLES),
                                categorical_values,
                                num_samples,
                                CLASSES)

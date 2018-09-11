@@ -8,7 +8,7 @@ import numpy as np
 
 from scipy.sparse import csr_matrix, save_npz
 
-from dataset_pre_processing.metadata import create_metadata
+from dataset_pre_processing.metadata import create_metadata, create_one_type_dictionary
 
 
 def uscensus_transform(input_path, output_path, metadata_path):
@@ -36,7 +36,7 @@ def uscensus_transform(input_path, output_path, metadata_path):
     num_samples = row_number + 1
 
     metadata = create_metadata(variables,
-                               ["categorical" for _ in variables],
+                               create_one_type_dictionary("categorical", variables),
                                categorical_values,
                                num_samples)
 

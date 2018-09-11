@@ -5,7 +5,7 @@ import json
 
 import numpy as np
 
-from dataset_pre_processing.metadata import create_metadata, create_class_to_index
+from dataset_pre_processing.metadata import create_metadata, create_class_to_index, create_one_type_dictionary
 
 from sklearn.preprocessing.data import MinMaxScaler
 
@@ -91,7 +91,11 @@ CLASS_TO_INDEX = create_class_to_index(CLASSES)
 
 
 def letter_recognition_transform(input_path, features_path, labels_path, metadata_path):
-    metadata = create_metadata(VARIABLES, ["numerical" for _ in VARIABLES], {}, sum(NUM_SAMPLES), CLASSES)
+    metadata = create_metadata(VARIABLES,
+                               create_one_type_dictionary("numerical", VARIABLES),
+                               {},
+                               sum(NUM_SAMPLES),
+                               CLASSES)
 
     input_file = open(input_path, "r")
 
