@@ -7,7 +7,7 @@ import numpy as np
 
 from dataset_pre_processing.metadata import create_metadata, create_class_to_index, create_one_type_dictionary
 
-from sklearn.preprocessing.data import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler
 
 
 VARIABLES = [
@@ -130,7 +130,6 @@ def letter_recognition_transform(input_path, features_path, labels_path, metadat
     for class_index in range(len(NUM_SAMPLES)):
         num_samples_class = (labels == class_index).sum()
         assert num_samples_class == NUM_SAMPLES[class_index]
-        print("Num samples '{}': {}".format(chr(ord("A") + class_index), num_samples_class))
 
     print("Total samples: ", features.shape[0])
     print("Features: ", features.shape[1])

@@ -8,7 +8,7 @@ import numpy as np
 
 from dataset_pre_processing.metadata import create_metadata
 
-from sklearn.preprocessing.data import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler
 
 
 NUM_SAMPLES = 30000
@@ -79,12 +79,13 @@ def default_credit_card_transform(input_path, features_path, labels_path, metada
                 value = float(value)
                 features[i, metadata["value_to_index"][variable]] = value
             elif TYPES[variable] == "categorical":
+                value = value.replace(".0", "")
                 assert value in VALUES[variable], \
                     "'{}' is not a valid value for '{}'".format(value, variable)
                 features[i, metadata["value_to_index"][variable][value]] = 1.0
 
         # the class needs to be transformed
-        labels[i] = row["default payment next month"]
+        labels[i] = int(row["default payment next month"].replace(".0", ""))
 
     # scale
     scaler = MinMaxScaler(feature_range=(0, 1), copy=False)

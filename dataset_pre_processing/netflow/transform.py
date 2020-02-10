@@ -8,7 +8,7 @@ from datetime import datetime
 
 import numpy as np
 
-from sklearn.preprocessing.data import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler
 
 from dataset_pre_processing.metadata import create_metadata
 
