@@ -7,7 +7,7 @@ import numpy as np
 
 from dataset_pre_processing.metadata import create_metadata
 
-from sklearn.preprocessing.data import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler
 
 
 VARIABLES = [
