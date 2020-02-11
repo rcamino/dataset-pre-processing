@@ -115,13 +115,30 @@ CLASSES = [
 def covertype_transform(input_path, features_path, labels_path, metadata_path):
     metadata = create_metadata(VARIABLES, TYPES, VALUES, sum(NUM_SAMPLES), CLASSES)
 
+    # The raw data is already nicely one-hot-encoded, but we need to follow the standard of our metadata.
+    # The most important thing is that we put the categorical features at the beginning.
+    # The extra annoying thing is that we also sort the categorical values alphabetically.
+    # Because of this, we need to do map of feature indices unnecessarily.
+    old_to_new_feature_indices = {}
+    old_feature_index = 0
+    for variable in VARIABLES:
+        if TYPES[variable] == "numerical":
+            old_to_new_feature_indices[old_feature_index] = metadata["value_to_index"][variable]
+            old_feature_index += 1
+        elif TYPES[variable] == "categorical":
+            for value in VALUES[variable]:
+                old_to_new_feature_indices[old_feature_index] = metadata["value_to_index"][variable][value]
+                old_feature_index += 1
+        else:
+            raise Exception("Invalid type.")
+
     input_file = open(input_path, "r")
 
     features = np.zeros((metadata["num_samples"], metadata["num_features"]), dtype=np.float32)
     labels = np.zeros(metadata["num_samples"], dtype=np.int32)
 
     # transform
-    i = 0
+    sample_index = 0
     line = input_file.readline()
     while line != "":
         line = line.rstrip("\n")
@@ -130,16 +147,17 @@ def covertype_transform(input_path, features_path, labels_path, metadata_path):
         # transform original class numbers to 0 indexed arrays
         class_number = int(values[-1]) - 1
 
-        if i < metadata["num_samples"]:
+        if sample_index < metadata["num_samples"]:
             # the categorical variables are already one hot encoded
-            for j, value in enumerate(values[:-1]):
+            for old_feature_index, value in enumerate(values[:-1]):
+                new_feature_index = old_to_new_feature_indices[old_feature_index]
                 value = float(value)
-                features[i, j] = value
+                features[sample_index, new_feature_index] = value
 
             # the class needs to be transformed
-            labels[i] = class_number
+            labels[sample_index] = class_number
 
-        i += 1
+        sample_index += 1
 
         line = input_file.readline()
 
@@ -147,7 +165,7 @@ def covertype_transform(input_path, features_path, labels_path, metadata_path):
     scaler = MinMaxScaler(feature_range=(0, 1), copy=False)
     scaler.fit_transform(features)
 
-    assert i == metadata["num_samples"]
+    assert sample_index == metadata["num_samples"]
 
     print("Total samples: ", features.shape[0])
     print("Features: ", features.shape[1])
