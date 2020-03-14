@@ -1,3 +1,6 @@
+CATEGORICAL_FEATURE_FORMAT = "{}_{:d}"
+
+
 def create_one_type_dictionary(variable_type, variables):
     return dict([(variable, variable_type) for variable in variables])
 
@@ -30,6 +33,7 @@ def create_metadata(variables, variable_types, categorical_values={}, num_sample
     binary_variables, categorical_variables, numerical_variables = types_to_sorted_lists(variable_types, variables)
 
     feature_number = 0
+    features = []
     value_to_index = {}
     index_to_value = []
     variable_sizes = []
@@ -40,31 +44,35 @@ def create_metadata(variables, variable_types, categorical_values={}, num_sample
         values = sorted(categorical_values[variable])
         variable_sizes.append(len(values))
         value_to_index[variable] = {}
-        for value in values:
+        for value_index, value in enumerate(values):
             index_to_value.append((variable, value))
             value_to_index[variable][value] = feature_number
             feature_number += 1
+            features.append(CATEGORICAL_FEATURE_FORMAT.format(variable, value_index))
 
     for variable in binary_variables:
         variable_types.append("categorical")
         values = [0, 1]
         variable_sizes.append(2)
         value_to_index[variable] = {}
-        for value in values:
+        for value_index, value in enumerate(values):
             index_to_value.append((variable, value))
             value_to_index[variable][value] = feature_number
             feature_number += 1
+            features.append(CATEGORICAL_FEATURE_FORMAT.format(variable, value_index))
 
     for variable in numerical_variables:
         variable_types.append("numerical")
         variable_sizes.append(1)
         value_to_index[variable] = feature_number
         feature_number += 1
+        features.append(variable)
 
     num_features = feature_number
 
     metadata = {
         "variables": binary_variables + categorical_variables + numerical_variables,
+        "features": features,
         "variable_sizes": variable_sizes,
         "variable_types": variable_types,
         "index_to_value": index_to_value,
