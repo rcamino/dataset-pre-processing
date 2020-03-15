@@ -16,33 +16,47 @@ No missing values.
 | :--- | :--- | :--- |
 | 10 | 44 | 54 |
 
-| Name | Data Type | Measurement | Description |
+The variable index corresponds to the order in the original data.
+
+The corresponding feature index after the transformation may differ (check the metadata).
+
+The binary variables are the result of one-hot-encoding two different categorical variables.
+
+| Index | Name | Type (Unit) | Description |
 | --- | --- | --- | --- |
-| Elevation | numerical | meters | Elevation in meters |
-| Aspect | numerical | azimuth | Aspect in degrees azimuth |
-| Slope | numerical | degrees | Slope in degrees |
-| Horizontal_Distance_To_Hydrology | numerical | meters | Horz Dist to nearest surface water features |
-| Vertical_Distance_To_Hydrology | numerical | meters | Vert Dist to nearest surface water features |
-| Horizontal_Distance_To_Roadways | numerical | meters | Horz Dist to nearest roadway |
-| Hillshade_9am | numerical | 0 to 255 index | Hillshade index at 9am, summer solstice |
-| Hillshade_Noon | numerical | 0 to 255 index | Hillshade index at noon, summer soltice |
-| Hillshade_3pm | numerical | 0 to 255 index | Hillshade index at 3pm, summer solstice |
-| Horizontal_Distance_To_Fire_Points | numerical | meters | Horz Dist to nearest wildfire ignition points |
-| Wilderness_Area (4 binary columns) | binary | 0 (absence) or 1 (presence) | Wilderness area designation |
-| Soil_Type (40 binary columns) | binary | 0 (absence) or 1 (presence) | Soil Type designation |
+| 1 | Elevation | numerical (meters) | Elevation. |
+| 2 | Aspect | numerical (degrees azimuth) | Aspect. |
+| 3 | Slope | numerical (degrees) | Slope. |
+| 4 | Horizontal_Distance_To_Hydrology | numerical (meters) | Horizontal distance to nearest surface water features. |
+| 5 | Vertical_Distance_To_Hydrology | numerical (meters) | Vertical distance to nearest surface water features. |
+| 6 | Horizontal_Distance_To_Roadways | numerical (meters) | Horizontal distance to nearest roadway. |
+| 7 | Hillshade_9am | numerical (0 to 255 index) | Hillshade index at 9am, summer solstice. |
+| 8 | Hillshade_Noon | numerical (0 to 255 index) | Hillshade index at noon, summer solstice. |
+| 9 | Hillshade_3pm | numerical (0 to 255 index) | Hillshade index at 3pm, summer solstice. |
+| 10 | Horizontal_Distance_To_Fire_Points | numerical (meters) | Horizontal distance to nearest wildfire ignition points. |
+| 11 - 14 | Wilderness_Area | binary | Wilderness area designation. |
+| 15 - 54 | Soil_Type | binary | Soil type designation. |
 
-Wilderness Areas:
+### Wilderness Area
 
-| ID | Wilderness Area |
+Unique values: 4.
+
+The variable number of these binary variables can be calculated with `11 + ID - 1`: 
+
+| ID | Description |
 | --- | --- |
 | 1 | Rawah Wilderness Area |
 | 2 | Neota Wilderness Area |
 | 3 | Comanche Peak Wilderness Area |
 | 4 | Cache la Poudre Wilderness Area |
 
-Soil Types:
+### Soil Type
 
-| Study | USFS/ELU* | Description |
+Unique values: 40.
+
+The variable number of these binary variables can be calculated with `15 + ID - 1`:
+
+| ID | USFS/ELU* | Description |
 | --- | --- | --- |
  1 | 2702 | Cathedral family - Rock outcrop complex, extremely stony |
  2 | 2703 | Vanet - Ratake families complex, very stony |

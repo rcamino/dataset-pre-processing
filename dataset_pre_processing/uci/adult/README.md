@@ -19,37 +19,187 @@ The data is originally split into train and test and has some missing values:
 
 | Numerical | Categorical | Total |
 | :--- | :--- | :--- |
-| 4 | 8 | 12 |
+| 6 | 8 | 14 |
 
-The variables appear in the following order:
+The only descriptions we have for the variables is their names.
 
-- age: continuous.
+The variable index corresponds to the order in the original data.
 
-- workclass: Private, Self-emp-not-inc, Self-emp-inc, Federal-gov, Local-gov, State-gov, Without-pay, Never-worked.
+The corresponding feature index after the transformation may differ (check the metadata).
 
-- fnlwgt: continuous.
+The categorical variables are not encoded.
 
-- education: Bachelors, Some-college, 11th, HS-grad, Prof-school, Assoc-acdm, Assoc-voc, 9th, 7th-8th, 12th, Masters, 1st-4th, 10th, Doctorate, 5th-6th, Preschool.
+| Index | Name | Type |
+| --- | --- | --- |
+| 1 | age | numerical |
+| 2 | workclass | categorical |
+| 3 | fnlwgt | numerical |
+| 4 | education | categorical |
+| 5 | education-num | numerical |
+| 6 | marital-status | categorical |
+| 7 | occupation | categorical |
+| 8 | relationship | categorical |
+| 9 | race | categorical |
+| 10 | sex | categorical |
+| 11 | capital-gain | numerical |
+| 12 | capital-loss | numerical |
+| 13 | hours-per-week | numerical |
+| 14 | native-country | categorical |
 
-- education-num: continuous.
+### Workclass
 
-- marital-status: Married-civ-spouse, Divorced, Never-married, Separated, Widowed, Married-spouse-absent, Married-AF-spouse.
+Unique values: 8.
 
-- occupation: Tech-support, Craft-repair, Other-service, Sales, Exec-managerial, Prof-specialty, Handlers-cleaners, Machine-op-inspct, Adm-clerical, Farming-fishing, Transport-moving, Priv-house-serv, Protective-serv, Armed-Forces.
+| Value |
+| --- |
+| Private |
+| Self-emp-not-inc |
+| Self-emp-inc |
+| Federal-gov |
+| Local-gov |
+| State-gov |
+| Without-pay |
+| Never-worked |
 
-- relationship: Wife, Own-child, Husband, Not-in-family, Other-relative, Unmarried.
+### Education
 
-- race: White, Asian-Pac-Islander, Amer-Indian-Eskimo, Other, Black.
+Unique values: 16.
 
-- sex: Female, Male.
+| Value |
+| --- |
+| Bachelors |
+| Some-college |
+| 11th |
+| HS-grad |
+| Prof-school |
+| Assoc-acdm |
+| Assoc-voc |
+| 9th |
+| 7th-8th |
+| 12th |
+| Masters |
+| 1st-4th |
+| 10th |
+| Doctorate |
+| 5th-6th |
+| Preschool |
 
-- capital-gain: continuous.
+### Marital status
 
-- capital-loss: continuous.
+Unique values: 7.
 
-- hours-per-week: continuous.
+| Value |
+| --- |
+| Married-civ-spouse |
+| Divorced |
+| Never-married |
+| Separated |
+| Widowed |
+| Married-spouse-absent |
+| Married-AF-spouse |
 
-- native-country: United-States, Cambodia, England, Puerto-Rico, Canada, Germany, Outlying-US(Guam-USVI-etc), India, Japan, Greece, South, China, Cuba, Iran, Honduras, Philippines, Italy, Poland, Jamaica, Vietnam, Mexico, Portugal, Ireland, France, Dominican-Republic, Laos, Ecuador, Taiwan, Haiti, Columbia, Hungary, Guatemala, Nicaragua, Scotland, Thailand, Yugoslavia, El-Salvador, Trinadad&Tobago, Peru, Hong, Holand-Netherlands.
+### Occupation
+
+Unique values: 14.
+
+| Value |
+| --- |
+| Tech-support |
+| Craft-repair |
+| Other-service |
+| Sales |
+| Exec-managerial |
+| Prof-specialty |
+| Handlers-cleaners |
+| Machine-op-inspct |
+| Adm-clerical |
+| Farming-fishing |
+| Transport-moving |
+| Priv-house-serv |
+| Protective-serv |
+| Armed-Forces |
+
+### Relationship
+
+Unique values: 6.
+
+| Value |
+| --- |
+| Wife |
+| Own-child |
+| Husband |
+| Not-in-family |
+| Other-relative |
+| Unmarried |
+
+### Race
+
+Unique values: 5.
+
+| Value |
+| --- |
+| White |
+| Asian-Pac-Islander |
+| Amer-Indian-Eskimo |
+| Other |
+| Black |
+
+### Sex
+
+Unique values: 2.
+
+| Value |
+| --- |
+| Female |
+| Male |
+
+### Native country
+
+Unique values: 41.
+
+| Value |
+| --- |
+| United-States |
+| Cambodia |
+| England |
+| Puerto-Rico |
+| Canada |
+| Germany |
+| Outlying-US(Guam-USVI-etc) |
+| India |
+| Japan |
+| Greece |
+| South |
+| China |
+| Cuba |
+| Iran |
+| Honduras |
+| Philippines |
+| Italy |
+| Poland |
+| Jamaica |
+| Vietnam |
+| Mexico |
+| Portugal |
+| Ireland |
+| France |
+| Dominican-Republic |
+| Laos |
+| Ecuador |
+| Taiwan |
+| Haiti |
+| Columbia |
+| Hungary |
+| Guatemala |
+| Nicaragua |
+| Scotland |
+| Thailand |
+| Yugoslavia |
+| El-Salvador |
+| Trinadad&Tobago |
+| Peru |
+| Hong |
+| Holand-Netherlands |
 
 ## Target Variable
 

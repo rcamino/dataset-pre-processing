@@ -14,14 +14,20 @@ Number of samples: 30,000.
 | :--- | :--- | :--- | 
 | 14 | 9 | 23 |
 
-| Number | Name | Type (Unit) | Description |
+The variable index corresponds to the order in the original data.
+
+The corresponding feature index after the transformation may differ (check the metadata).
+
+The categorical variables are encoded with integers.
+
+| Index | Name | Type (Unit) | Description |
 | :--- | :--- | :--- | :--- |
 1 | LIMIT_BAL | numerical (NT dollar) | Amount of the given credit: it includes both the individual consumer credit and his/her family (supplementary) credit. |
 2 | SEX | categorical | Gender. |
 3 | EDUCATION | categorical | Education. |
 4 | MARRIAGE | categorical | Marital status. |
 5 | AGE | numerical (years) | Age. |
-6 | PAY_0 | categorical | repayment status in September, 2005. |
+6 | PAY_0* | categorical | repayment status in September, 2005. |
 7 | PAY_2 | categorical | repayment status in August, 2005. |
 ... |
 11 | PAY_6 | categorical | repayment status in April, 2005. |
@@ -34,23 +40,27 @@ Number of samples: 30,000.
 ... |
 23 | PAY_AMT6 | numerical (NT dollar) | amount paid in April, 2005. |
 
-For some reason PAY_ has starts from index 0 but skips index 1.
+(*) For some reason PAY_ has starts from index 0 but skips index 1.
 
 ### Gender
 
-| ID | Gender |
+Unique values: 2.
+
+| Value | Description |
 | --- | --- |
 | 1 | male |
 | 2 | female |
 
 ### Education
 
+Unique values: 7.
+
 The description on the UCI repository has information for values in the range \[1, 4],
 but the data presents values in the range \[0, 6].
 
 Additional information was taken from this [Kaggle discussion](https://www.kaggle.com/uciml/default-of-credit-card-clients-dataset/discussion/34608).
 
-| ID | Education |
+| Value | Description |
 | --- | --- |
 | 0 | others |
 | 1 | graduate school |
@@ -64,12 +74,14 @@ We merge all the "others" together.
 
 ### Marital status
 
+Unique values: 4.
+
 The description on the UCI repository has information for values in the range \[1, 3],
 but the data presents values in the range \[0, 3].
 
 Additional information was taken from this [Kaggle discussion](https://www.kaggle.com/uciml/default-of-credit-card-clients-dataset/discussion/34608).
 
-| ID | Marital status |
+| Value | Description |
 | --- | --- |
 | 0 | others |
 | 1 | married |
@@ -78,13 +90,15 @@ Additional information was taken from this [Kaggle discussion](https://www.kaggl
 
 ### Repayment status (any of them)
 
+Unique values: 12.
+
 The description on the UCI repository has no information for values -2 and 0.
 
 Additional information was taken from this [Kaggle discussion](https://www.kaggle.com/uciml/default-of-credit-card-clients-dataset/discussion/34608).
 
 Also it seems that the value for -1 was wrong.
 
-| ID | Repayment status |
+| Value | Description |
 | --- | --- |
 | -2 | no consumption |
 | -1 | paid in full |
