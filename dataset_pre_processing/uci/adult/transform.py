@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import argparse
 import json
+import pickle
 
 import numpy as np
 
@@ -181,8 +182,7 @@ NUM_SAMPLES = {
 }
 
 
-def adult_transform(input_train_path, input_test_path, features_train_path, features_test_path, labels_train_path,
-                    labels_test_path, metadata_path, ignore_missing):
+def adult_transform(train_path, test_path, features_path, labels_path, metadata_path, ignore_missing, scaler_path):
 
     num_samples_train = NUM_SAMPLES[ignore_missing]["train"]
     num_samples_test = NUM_SAMPLES[ignore_missing]["test"]
@@ -190,7 +190,7 @@ def adult_transform(input_train_path, input_test_path, features_train_path, feat
     metadata = create_metadata(VARIABLES, TYPES, VALUES, num_samples_train + num_samples_test, CLASSES)
 
     # transform train
-    train_file = open(input_train_path, "r")
+    train_file = open(train_path, "r")
     features_train, labels_train = adult_transform_file(train_file,
                                                         num_samples_train,
                                                         metadata["num_features"],
@@ -199,7 +199,7 @@ def adult_transform(input_train_path, input_test_path, features_train_path, feat
     train_file.close()
 
     # transform test
-    test_file = open(input_test_path, "r")
+    test_file = open(test_path, "r")
     test_file.readline()  # has an extra first line
     features_test, labels_test = adult_transform_file(test_file,
                                                       num_samples_test,
@@ -208,21 +208,21 @@ def adult_transform(input_train_path, input_test_path, features_train_path, feat
                                                       ignore_missing)
     test_file.close()
 
-    # scale train and test together
+    # concatenate train and test
     features = np.concatenate((features_train, features_test))
-    scaler = MinMaxScaler(feature_range=(0, 1), copy=False)
-    scaler.fit(features)
-    scaler.transform(features_train)
-    scaler.transform(features_test)
+    labels = np.concatenate((labels_train, labels_test))
+
+    # scale train and test together
+    if scaler_path is not None:
+        scaler = MinMaxScaler(feature_range=(0, 1), copy=False)
+        scaler.fit_transform(features)
+
+        with open(scaler_path, "wb") as scaler_file:
+            pickle.dump(scaler, scaler_file)
 
     # save
-    np.save(features_train_path, features_train)
-    np.save(labels_train_path, labels_train)
-    np.save(features_test_path, features_test)
-    np.save(labels_test_path, labels_test)
-
-    metadata["features_min"] = scaler.data_min_.tolist()
-    metadata["features_max"] = scaler.data_max_.tolist()
+    np.save(features_path, features)
+    np.save(labels_path, labels)
 
     with open(metadata_path, "w") as metadata_file:
         json.dump(metadata, metadata_file)
@@ -276,30 +276,28 @@ def adult_transform_file(input_file, num_samples, num_features, value_to_index, 
 
 def main(args=None):
     options_parser = argparse.ArgumentParser(
-        description="Transform the Adult text train and test data into feature matrices."
-                    + " Dataset: http://mlr.cs.umass.edu/ml/datasets/Adult."
-    )
+        description="Transform the text train and test data into a feature matrix and label array.")
 
-    options_parser.add_argument("input_train", type=str, help="Input Adult train data in text format.")
-    options_parser.add_argument("input_test", type=str, help="Input Adult test data in text format.")
-    options_parser.add_argument("features_train", type=str, help="Output train features in numpy array format.")
-    options_parser.add_argument("features_test", type=str, help="Output test features in numpy array format.")
-    options_parser.add_argument("labels_train", type=str, help="Output train labels in numpy array format.")
-    options_parser.add_argument("labels_test", type=str, help="Output test labels in numpy array format.")
+    options_parser.add_argument("train", type=str, help="Input train data in text format.")
+    options_parser.add_argument("test", type=str, help="Input test data in text format.")
+    options_parser.add_argument("features", type=str, help="Output features in numpy array format.")
+    options_parser.add_argument("labels", type=str, help="Output labels in numpy array format.")
     options_parser.add_argument("metadata", type=str, help="Metadata in json format.")
 
     options_parser.add_argument("--ignore_missing", action="store_true", help="Ignore rows with missing values.")
 
+    options_parser.add_argument("--scaler", type=str,
+                                help="Output scikit-learn MinMaxScaler in pickle format. Enables scaling to (0, 1).")
+
     options = options_parser.parse_args(args=args)
 
-    adult_transform(options.input_train,
-                    options.input_test,
-                    options.features_train,
-                    options.features_test,
-                    options.labels_train,
-                    options.labels_test,
+    adult_transform(options.train,
+                    options.test,
+                    options.features,
+                    options.labels,
                     options.metadata,
-                    options.ignore_missing)
+                    options.ignore_missing,
+                    options.scaler)
 
 
 if __name__ == "__main__":
