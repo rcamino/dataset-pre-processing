@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import argparse
 import json
+import pickle
 
 import numpy as np
 
@@ -90,7 +91,7 @@ CLASSES = [
 CLASS_TO_INDEX = create_class_to_index(CLASSES)
 
 
-def letter_recognition_transform(input_path, features_path, labels_path, metadata_path):
+def letter_recognition_transform(input_path, features_path, labels_path, metadata_path, scaler_path):
     metadata = create_metadata(VARIABLES,
                                create_one_type_dictionary("numerical", VARIABLES),
                                {},
@@ -122,8 +123,12 @@ def letter_recognition_transform(input_path, features_path, labels_path, metadat
         line = input_file.readline()
 
     # scale
-    scaler = MinMaxScaler(feature_range=(0, 1), copy=False)
-    scaler.fit_transform(features)
+    if scaler_path is not None:
+        scaler = MinMaxScaler(feature_range=(0, 1), copy=False)
+        scaler.fit_transform(features)
+
+        with open(scaler_path, "wb") as scaler_file:
+            pickle.dump(scaler, scaler_file)
 
     assert i == metadata["num_samples"]
 
@@ -131,35 +136,33 @@ def letter_recognition_transform(input_path, features_path, labels_path, metadat
         num_samples_class = (labels == class_index).sum()
         assert num_samples_class == NUM_SAMPLES[class_index]
 
-    print("Total samples: ", features.shape[0])
-    print("Features: ", features.shape[1])
-
     np.save(features_path, features)
     np.save(labels_path, labels)
 
     input_file.close()
-
-    metadata["features_min"] = scaler.data_min_.tolist()
-    metadata["features_max"] = scaler.data_max_.tolist()
 
     with open(metadata_path, "w") as metadata_file:
         json.dump(metadata, metadata_file)
 
 
 def main(args=None):
-    options_parser = argparse.ArgumentParser(
-        description="Transform the Letter Recognition data into feature matrices."
-                    + " Dataset: https://archive.ics.uci.edu/ml/datasets/Letter+Recognition"
-    )
+    options_parser = argparse.ArgumentParser(description="Transform the data into a feature matrix and label array.")
 
-    options_parser.add_argument("input", type=str, help="Input Letter Recognition data in text format.")
+    options_parser.add_argument("input", type=str, help="Input data in text format.")
     options_parser.add_argument("features", type=str, help="Output features in numpy array format.")
     options_parser.add_argument("labels", type=str, help="Output labels in numpy array format.")
     options_parser.add_argument("metadata", type=str, help="Metadata in json format.")
 
+    options_parser.add_argument("--scaler", type=str,
+                                help="Output scikit-learn MinMaxScaler in pickle format. Enables scaling to (0, 1).")
+
     options = options_parser.parse_args(args=args)
 
-    letter_recognition_transform(options.input, options.features, options.labels, options.metadata)
+    letter_recognition_transform(options.input,
+                                 options.features,
+                                 options.labels,
+                                 options.metadata,
+                                 options.scaler)
 
 
 if __name__ == "__main__":
