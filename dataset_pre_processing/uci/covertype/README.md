@@ -22,6 +22,10 @@ The corresponding feature index after the transformation may differ (check the m
 
 The binary variables are the result of one-hot-encoding two different categorical variables.
 
+The categorical variables are encoded with integers.
+
+The target variable is "Cover_Type".
+
 | Index | Name | Type (Unit) | Description |
 | --- | --- | --- | --- |
 | 1 | Elevation | numerical (meters) | Elevation. |
@@ -36,6 +40,7 @@ The binary variables are the result of one-hot-encoding two different categorica
 | 10 | Horizontal_Distance_To_Fire_Points | numerical (meters) | Horizontal distance to nearest wildfire ignition points. |
 | 11 - 14 | Wilderness_Area | binary | Wilderness area designation. |
 | 15 - 54 | Soil_Type | binary | Soil type designation. |
+| 55 | Cover_Type | categorical | Forest Cover Type designation |
 
 ### Wilderness Area
 
@@ -101,9 +106,7 @@ The variable number of these binary variables can be calculated with `15 + ID - 
 
 (*) USFS/ELU is formed by the two most/least significant digits respectively.
 
-## Target Variable
-
-The target variable is the "Forest Cover Type designation" (7 classes):
+## Class distribution
 
 | Class | Samples |
 | :--- | ---: |

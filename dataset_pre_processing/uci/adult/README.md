@@ -19,7 +19,7 @@ The data is originally split into train and test and has some missing values:
 
 | Numerical | Categorical | Total |
 | :--- | :--- | :--- |
-| 6 | 8 | 14 |
+| 6 | 9 | 15 |
 
 The only descriptions we have for the variables is their names.
 
@@ -28,6 +28,8 @@ The variable index corresponds to the order in the original data.
 The corresponding feature index after the transformation may differ (check the metadata).
 
 The categorical variables are not encoded.
+
+The target variable is "income".
 
 | Index | Name | Type |
 | --- | --- | --- |
@@ -45,6 +47,7 @@ The categorical variables are not encoded.
 | 12 | capital-loss | numerical |
 | 13 | hours-per-week | numerical |
 | 14 | native-country | categorical |
+| 15 | income | categorical |
 
 ### Workclass
 
@@ -201,6 +204,9 @@ Unique values: 41.
 | Hong |
 | Holand-Netherlands |
 
-## Target Variable
+### Income
 
-The target variable appears last and it is binary: >50K, <=50K.
+| Value |
+| --- |
+| >50K |
+| <=50K |

@@ -10,14 +10,21 @@ Number of samples: 20,000.
 
 ## Variables
 
-Number of features: 16 (all continuous).
+| Numerical | Categorical | Total |
+| :--- | :--- | :--- |
+| 16 | 1 | 17 |
 
 The variable index corresponds to the order in the original data.
 
 The corresponding feature index after the transformation may differ (check the metadata).
 
+The categorical variables are not encoded.
+
+The target variable is "lettr".
+
 | Index | Name | Description |
 | :--- | :--- | :--- |
+| 1 | lettr | capital letter |
 | 2 | x-box | horizontal position of box |
 | 3 | y-box | vertical position of box |
 | 4 | width | width of box |
@@ -35,9 +42,7 @@ The corresponding feature index after the transformation may differ (check the m
 | 16 | y-ege | mean edge count bottom to top |
 | 17 | yegvx | correlation of y-ege with x |
 
-## Target Variable
-
-The target variable is the letter or character (26 classes):
+## Class distribution
 
 | Class | Samples |
 | :--- | :--- |

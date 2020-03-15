@@ -10,9 +10,9 @@ Number of samples: 30,000.
 
 ## Variables
 
-| Numerical | Categorical | Total |
-| :--- | :--- | :--- | 
-| 14 | 9 | 23 |
+| Numerical | Categorical | Binary | Total |
+| :--- | :--- | :--- | :--- |
+| 15 | 9 | 1 | 25 |
 
 The variable index corresponds to the order in the original data.
 
@@ -20,25 +20,31 @@ The corresponding feature index after the transformation may differ (check the m
 
 The categorical variables are encoded with integers.
 
+The "ID" variable is ignored.
+
+The target variable is "default payment next month".
+
 | Index | Name | Type (Unit) | Description |
 | :--- | :--- | :--- | :--- |
-1 | LIMIT_BAL | numerical (NT dollar) | Amount of the given credit: it includes both the individual consumer credit and his/her family (supplementary) credit. |
-2 | SEX | categorical | Gender. |
-3 | EDUCATION | categorical | Education. |
-4 | MARRIAGE | categorical | Marital status. |
-5 | AGE | numerical (years) | Age. |
-6 | PAY_0* | categorical | repayment status in September, 2005. |
-7 | PAY_2 | categorical | repayment status in August, 2005. |
+1 | ID | numerical | Case identifier. |
+2 | LIMIT_BAL | numerical (NT dollar) | Amount of the given credit: it includes both the individual consumer credit and his/her family (supplementary) credit. |
+3 | SEX | categorical | Gender. |
+4 | EDUCATION | categorical | Education. |
+5 | MARRIAGE | categorical | Marital status. |
+6 | AGE | numerical (years) | Age. |
+7 | PAY_0* | categorical | repayment status in September, 2005. |
+8 | PAY_2 | categorical | repayment status in August, 2005. |
 ... |
-11 | PAY_6 | categorical | repayment status in April, 2005. |
-12 | BILL_AMT1 | numerical (NT dollar) | amount of bill statement in September, 2005. |
-13 | BILL_AMT2 | numerical (NT dollar) | amount of bill statement in August, 2005. |
+12 | PAY_6 | categorical | repayment status in April, 2005. |
+13 | BILL_AMT1 | numerical (NT dollar) | amount of bill statement in September, 2005. |
+14 | BILL_AMT2 | numerical (NT dollar) | amount of bill statement in August, 2005. |
 ... |
-17 | BILL_AMT6 | numerical (NT dollar) | amount of bill statement in April, 2005. |
-18 | PAY_AMT1 | numerical (NT dollar) | amount paid in September, 2005. |
-19 | PAY_AMT2 | numerical (NT dollar) | amount paid in August, 2005. |
+18 | BILL_AMT6 | numerical (NT dollar) | amount of bill statement in April, 2005. |
+19 | PAY_AMT1 | numerical (NT dollar) | amount paid in September, 2005. |
+20 | PAY_AMT2 | numerical (NT dollar) | amount paid in August, 2005. |
 ... |
-23 | PAY_AMT6 | numerical (NT dollar) | amount paid in April, 2005. |
+24 | PAY_AMT6 | numerical (NT dollar) | amount paid in April, 2005. |
+25 | default payment next month | binary | indicates if the client defaults in the following month |
 
 (*) For some reason PAY_ has starts from index 0 but skips index 1.
 
