@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import argparse
 import json
+import pickle
 
 import numpy as np
 
@@ -112,7 +113,7 @@ CLASSES = [
 ]
 
 
-def covertype_transform(input_path, features_path, labels_path, metadata_path):
+def covertype_transform(input_path, features_path, labels_path, metadata_path, scaler_path):
     metadata = create_metadata(VARIABLES, TYPES, VALUES, sum(NUM_SAMPLES), CLASSES)
 
     # The raw data is already nicely one-hot-encoded, but we need to follow the standard of our metadata.
@@ -162,43 +163,42 @@ def covertype_transform(input_path, features_path, labels_path, metadata_path):
         line = input_file.readline()
 
     # scale
-    scaler = MinMaxScaler(feature_range=(0, 1), copy=False)
-    scaler.fit_transform(features)
+    if scaler_path is not None:
+        scaler = MinMaxScaler(feature_range=(0, 1), copy=False)
+        scaler.fit_transform(features)
+
+        with open(scaler_path, "wb") as scaler_file:
+            pickle.dump(scaler, scaler_file)
 
     assert sample_index == metadata["num_samples"]
-
-    print("Total samples: ", features.shape[0])
-    print("Features: ", features.shape[1])
 
     np.save(features_path, features)
     np.save(labels_path, labels)
 
     input_file.close()
 
-    metadata["features_min"] = scaler.data_min_.tolist()
-    metadata["features_max"] = scaler.data_max_.tolist()
-
     with open(metadata_path, "w") as metadata_file:
         json.dump(metadata, metadata_file)
 
 
 def main(args=None):
-    options_parser = argparse.ArgumentParser(
-        description="Transform the Covertype data into feature matrices."
-                    + " Dataset: https://archive.ics.uci.edu/ml/datasets/covertype."
-    )
+    options_parser = argparse.ArgumentParser(description="Transform the data into a feature matrix and label array.")
 
-    options_parser.add_argument("input", type=str, help="Input Forest Cover data in text format.")
+    options_parser.add_argument("input", type=str, help="Input data in text format.")
     options_parser.add_argument("features", type=str, help="Output features in numpy array format.")
     options_parser.add_argument("labels", type=str, help="Output labels in numpy array format.")
     options_parser.add_argument("metadata", type=str, help="Metadata in json format.")
+
+    options_parser.add_argument("--scaler", type=str,
+                                help="Output scikit-learn MinMaxScaler in pickle format. Enables scaling to (0, 1).")
 
     options = options_parser.parse_args(args=args)
 
     covertype_transform(options.input,
                         options.features,
                         options.labels,
-                        options.metadata)
+                        options.metadata,
+                        options.scaler)
 
 
 if __name__ == "__main__":
