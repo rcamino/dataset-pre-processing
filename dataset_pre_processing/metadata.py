@@ -31,6 +31,7 @@ def types_to_sorted_lists(variable_types, variables=None):
 
 def create_metadata(variables, variable_types, categorical_values={}, num_samples=None, classes=None):
     binary_variables, categorical_variables, numerical_variables = types_to_sorted_lists(variable_types, variables)
+    sorted_variables = binary_variables + categorical_variables + numerical_variables
 
     feature_number = 0
     features = []
@@ -71,13 +72,17 @@ def create_metadata(variables, variable_types, categorical_values={}, num_sample
     num_features = feature_number
 
     metadata = {
-        "variables": binary_variables + categorical_variables + numerical_variables,
+        "variables": sorted_variables,
         "features": features,
         "variable_sizes": variable_sizes,
         "variable_types": variable_types,
         "index_to_value": index_to_value,
         "value_to_index": value_to_index,
         "num_features": num_features,
+        "num_variables": len(sorted_variables),
+        "num_binary_variables": len(binary_variables),
+        "num_categorical_variables": len(categorical_variables),
+        "num_numerical_variables": len(numerical_variables),
     }
 
     if num_samples is not None:
@@ -85,6 +90,7 @@ def create_metadata(variables, variable_types, categorical_values={}, num_sample
 
     if classes is not None:
         metadata["classes"] = classes
+        metadata["num_classes"] = len(classes)
 
     return metadata
 
