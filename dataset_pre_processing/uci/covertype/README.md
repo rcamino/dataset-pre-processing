@@ -12,9 +12,13 @@ No missing values.
 
 ## Variables
 
-| Numerical | Binary | Total |
-| :--- | :--- | :--- |
-| 10 | 44 | 54 |
+| Numerical | Categorical | Binary | Total |
+| :--- | :--- | :--- | :--- |
+| 10 | 1 | 44 | 55 |
+
+| Predictive | Non-Predictive | Target | Total |
+| :--- | :--- | :--- | :--- |
+| 54 | 0 | 1 | 55 |
 
 The variable index corresponds to the order in the original data.
 

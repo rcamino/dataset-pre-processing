@@ -10,9 +10,13 @@ Number of samples: 20,000.
 
 ## Variables
 
-| Numerical | Categorical | Total |
-| :--- | :--- | :--- |
-| 16 | 1 | 17 |
+| Numerical | Categorical | Binary | Total |
+| :--- | :--- | :--- | :--- |
+| 16 | 1 | 0 | 17 |
+
+| Predictive | Non-Predictive | Target | Total |
+| :--- | :--- | :--- | :--- |
+| 16 | 0 | 1 | 17 |
 
 The variable index corresponds to the order in the original data.
 

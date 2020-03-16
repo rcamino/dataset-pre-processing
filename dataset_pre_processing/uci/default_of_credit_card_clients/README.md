@@ -14,6 +14,10 @@ Number of samples: 30,000.
 | :--- | :--- | :--- | :--- |
 | 15 | 9 | 1 | 25 |
 
+| Predictive | Non-Predictive | Target | Total |
+| :--- | :--- | :--- | :--- |
+| 23 | 1 | 1 | 25 |
+
 The variable index corresponds to the order in the original data.
 
 The corresponding feature index after the transformation may differ (check the metadata).

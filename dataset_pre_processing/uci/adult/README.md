@@ -17,9 +17,13 @@ The data is originally split into train and test and has some missing values:
 
 ## Variables
 
-| Numerical | Categorical | Total |
-| :--- | :--- | :--- |
-| 6 | 9 | 15 |
+| Numerical | Categorical | Binary | Total |
+| :--- | :--- | :--- | :--- |
+| 6 | 9 | 0 | 15 |
+
+| Predictive | Non-Predictive | Target | Total |
+| :--- | :--- | :--- | :--- |
+| 14 | 0 | 1 | 15 |
 
 The only descriptions we have for the variables is their names.
 
