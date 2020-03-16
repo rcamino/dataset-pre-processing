@@ -42,9 +42,9 @@ def main():
 
     transform_main(args=[
         file_path,
-        os.path.join("features.npy"),
-        os.path.join("labels.npy"),
-        os.path.join("metadata.json"),
+        os.path.join(directory, "features.npy"),
+        os.path.join(directory, "labels.npy"),
+        os.path.join(directory, "metadata.json"),
         "--scaler=" + os.path.join(directory, "scaler.pickle")
     ])
 
