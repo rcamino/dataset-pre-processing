@@ -3,13 +3,11 @@ from __future__ import print_function
 import argparse
 import csv
 import json
-import pickle
 
 import numpy as np
 
 from dataset_pre_processing.metadata import create_metadata
-
-from sklearn.preprocessing import MinMaxScaler
+from dataset_pre_processing.scaling import scale_and_save_scaler
 
 
 NUM_SAMPLES = 30000
@@ -124,11 +122,7 @@ def default_credit_card_transform(input_path, features_path, labels_path, metada
 
     # scale
     if scaler_path is not None:
-        scaler = MinMaxScaler(feature_range=(0, 1), copy=False)
-        scaler.fit_transform(features)
-
-        with open(scaler_path, "wb") as scaler_file:
-            pickle.dump(scaler, scaler_file)
+        features = scale_and_save_scaler(features, scaler_path)
 
     assert i == metadata["num_samples"] - 1
 

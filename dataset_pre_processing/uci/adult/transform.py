@@ -2,13 +2,11 @@ from __future__ import print_function
 
 import argparse
 import json
-import pickle
 
 import numpy as np
 
 from dataset_pre_processing.metadata import create_metadata, create_class_to_index
-
-from sklearn.preprocessing import MinMaxScaler
+from dataset_pre_processing.scaling import scale_and_save_scaler
 
 
 VARIABLES = [
@@ -212,13 +210,9 @@ def adult_transform(train_path, test_path, features_path, labels_path, metadata_
     features = np.concatenate((features_train, features_test))
     labels = np.concatenate((labels_train, labels_test))
 
-    # scale train and test together
+    # scale
     if scaler_path is not None:
-        scaler = MinMaxScaler(feature_range=(0, 1), copy=False)
-        scaler.fit_transform(features)
-
-        with open(scaler_path, "wb") as scaler_file:
-            pickle.dump(scaler, scaler_file)
+        features = scale_and_save_scaler(features, scaler_path)
 
     # save
     np.save(features_path, features)
