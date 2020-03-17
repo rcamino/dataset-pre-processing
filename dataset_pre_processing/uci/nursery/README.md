@@ -39,86 +39,88 @@ The target variable is "class".
 
 Unique values: 3.
 
-| Value |
-| --- |
-| usual |
-| pretentious |
-| great_pret |
+| Value | Samples |
+| :--- | :--- |
+| great_pret | 4320 |
+| pretentious | 4320 |
+| usual | 4320 |
 
 ### Has nursery
 
 Unique values: 5.
 
-| Value |
-| --- |
-| proper |
-| less_proper |
-| improper |
-| critical |
-| very_crit |
+| Value | Samples |
+| :--- | :--- |
+| critical | 2592 |
+| improper | 2592 |
+| less_proper | 2592 |
+| proper | 2592 |
+| very_crit | 2592 |
 
 ### Form
 
 Unique values: 4.
 
-| Value |
-| --- |
-| complete |
-| completed |
-| incomplete |
-| foster |
+| Value | Samples |
+| :--- | :--- |
+| complete | 3240 |
+| completed | 3240 |
+| foster | 3240 |
+| incomplete | 3240 |
 
 ### Children
 
 Unique values: 4.
 
-| Value |
-| --- |
-| 1 |
-| 2 |
-| 3 |
-| more |
+| Value | Samples |
+| :--- | :--- |
+| 1 | 3240 |
+| 2 | 3240 |
+| 3 | 3240 |
+| more | 3240 |
 
 ### Housing
 
 Unique values: 3.
 
-| Value |
-| --- |
-| convenient |
-| less_conv |
-| critical |
+| Value | Samples |
+| :--- | :--- |
+| convenient | 4320 |
+| critical | 4320 |
+| less_conv | 4320 |
 
 ### Finance
 
 Unique values: 2.
 
-| Value |
-| --- |
-| convenient |
-| inconv |
+| Value | Samples |
+| :--- | :--- |
+| convenient | 6480 |
+| inconv | 6480 |
 
 ### Social
 
 Unique values: 3.
 
-| Value |
-| --- |
-| nonprob |
-| slightly_prob |
-| problematic |
+| Value | Samples |
+| :--- | :--- |
+| nonprob | 4320 |
+| problematic | 4320 |
+| slightly_prob | 4320 |
 
 ### Health
 
 Unique values: 3.
 
-| Value |
-| --- |
-| recommended |
-| priority |
-| not_recom |
+| Value | Samples |
+| :--- | :--- |
+| not_recom | 4320 |
+| priority | 4320 |
+| recommended | 4320 |
 
-## Class distribution
+### Class
+
+Unique values: 5.
 
 | Value | Samples |
 | :--- | :--- |

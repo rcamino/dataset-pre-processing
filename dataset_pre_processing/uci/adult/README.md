@@ -56,160 +56,163 @@ The target variable is "income".
 
 Unique values: 8.
 
-| Value |
-| --- |
-| Private |
-| Self-emp-not-inc |
-| Self-emp-inc |
-| Federal-gov |
-| Local-gov |
-| State-gov |
-| Without-pay |
-| Never-worked |
+| Value | Samples |
+| :--- | :--- |
+| Federal-gov | 1406 |
+| Local-gov | 3100 |
+| Never-worked | 0 |
+| Private | 33307 |
+| Self-emp-inc | 1646 |
+| Self-emp-not-inc | 3796 |
+| State-gov | 1946 |
+| Without-pay | 21 |
 
 ### Education
 
 Unique values: 16.
 
-| Value |
-| --- |
-| Bachelors |
-| Some-college |
-| 11th |
-| HS-grad |
-| Prof-school |
-| Assoc-acdm |
-| Assoc-voc |
-| 9th |
-| 7th-8th |
-| 12th |
-| Masters |
-| 1st-4th |
-| 10th |
-| Doctorate |
-| 5th-6th |
-| Preschool |
+| Value | Samples |
+| :--- | :--- |
+| 10th | 1223 |
+| 11th | 1619 |
+| 12th | 577 |
+| 1st-4th | 222 |
+| 5th-6th | 449 |
+| 7th-8th | 823 |
+| 9th | 676 |
+| Assoc-acdm | 1507 |
+| Assoc-voc | 1959 |
+| Bachelors | 7570 |
+| Doctorate | 544 |
+| HS-grad | 14783 |
+| Masters | 2514 |
+| Preschool | 72 |
+| Prof-school | 785 |
+| Some-college | 9899 |
 
 ### Marital status
 
 Unique values: 7.
 
-| Value |
-| --- |
-| Married-civ-spouse |
-| Divorced |
-| Never-married |
-| Separated |
-| Widowed |
-| Married-spouse-absent |
-| Married-AF-spouse |
+| Value | Samples |
+| :--- | :--- |
+| Divorced | 6297 |
+| Married-AF-spouse | 32 |
+| Married-civ-spouse | 21055 |
+| Married-spouse-absent | 552 |
+| Never-married | 14598 |
+| Separated | 1411 |
+| Widowed | 1277 |
 
 ### Occupation
 
 Unique values: 14.
 
-| Value |
-| --- |
-| Tech-support |
-| Craft-repair |
-| Other-service |
-| Sales |
-| Exec-managerial |
-| Prof-specialty |
-| Handlers-cleaners |
-| Machine-op-inspct |
-| Adm-clerical |
-| Farming-fishing |
-| Transport-moving |
-| Priv-house-serv |
-| Protective-serv |
-| Armed-Forces |
+| Value | Samples |
+| :--- | :--- |
+| Adm-clerical | 5540 |
+| Armed-Forces | 14 |
+| Craft-repair | 6020 |
+| Exec-managerial | 5984 |
+| Farming-fishing | 1480 |
+| Handlers-cleaners | 2046 |
+| Machine-op-inspct | 2970 |
+| Other-service | 4808 |
+| Priv-house-serv | 232 |
+| Prof-specialty | 6008 |
+| Protective-serv | 976 |
+| Sales | 5408 |
+| Tech-support | 1420 |
+| Transport-moving | 2316 |
 
 ### Relationship
 
 Unique values: 6.
 
-| Value |
-| --- |
-| Wife |
-| Own-child |
-| Husband |
-| Not-in-family |
-| Other-relative |
-| Unmarried |
+| Value | Samples |
+| :--- | :--- |
+| Husband | 18666 |
+| Not-in-family | 11702 |
+| Other-relative | 1349 |
+| Own-child | 6626 |
+| Unmarried | 4788 |
+| Wife | 2091 |
 
 ### Race
 
 Unique values: 5.
 
-| Value |
-| --- |
-| White |
-| Asian-Pac-Islander |
-| Amer-Indian-Eskimo |
-| Other |
-| Black |
+| Value | Samples |
+| :--- | :--- |
+| Amer-Indian-Eskimo | 435 |
+| Asian-Pac-Islander | 1303 |
+| Black | 4228 |
+| Other | 353 |
+| White | 38903 |
 
 ### Sex
 
 Unique values: 2.
 
-| Value |
-| --- |
-| Female |
-| Male |
+| Value | Samples |
+| :--- | :--- |
+| Female | 14695 |
+| Male | 30527 |
 
 ### Native country
 
 Unique values: 41.
 
-| Value |
-| --- |
-| United-States |
-| Cambodia |
-| England |
-| Puerto-Rico |
-| Canada |
-| Germany |
-| Outlying-US(Guam-USVI-etc) |
-| India |
-| Japan |
-| Greece |
-| South |
-| China |
-| Cuba |
-| Iran |
-| Honduras |
-| Philippines |
-| Italy |
-| Poland |
-| Jamaica |
-| Vietnam |
-| Mexico |
-| Portugal |
-| Ireland |
-| France |
-| Dominican-Republic |
-| Laos |
-| Ecuador |
-| Taiwan |
-| Haiti |
-| Columbia |
-| Hungary |
-| Guatemala |
-| Nicaragua |
-| Scotland |
-| Thailand |
-| Yugoslavia |
-| El-Salvador |
-| Trinadad&Tobago |
-| Peru |
-| Hong |
-| Holand-Netherlands |
+| Value | Samples |
+| :--- | :--- |
+| Cambodia | 26 |
+| Canada | 163 |
+| China | 113 |
+| Columbia | 82 |
+| Cuba | 133 |
+| Dominican-Republic | 97 |
+| Ecuador | 43 |
+| El-Salvador | 147 |
+| England | 119 |
+| France | 36 |
+| Germany | 193 |
+| Greece | 49 |
+| Guatemala | 86 |
+| Haiti | 69 |
+| Holand-Netherlands | 1 |
+| Honduras | 19 |
+| Hong | 28 |
+| Hungary | 18 |
+| India | 147 |
+| Iran | 56 |
+| Ireland | 36 |
+| Italy | 100 |
+| Jamaica | 103 |
+| Japan | 89 |
+| Laos | 21 |
+| Mexico | 903 |
+| Nicaragua | 48 |
+| Outlying-US(Guam-USVI-etc) | 22 |
+| Peru | 45 |
+| Philippines | 283 |
+| Poland | 81 |
+| Portugal | 62 |
+| Puerto-Rico | 175 |
+| Scotland | 20 |
+| South | 101 |
+| Taiwan | 55 |
+| Thailand | 29 |
+| Trinadad&Tobago | 26 |
+| United-States | 41292 |
+| Vietnam | 83 |
+| Yugoslavia | 23 |
+
 
 ### Income
 
-| Value |
-| --- |
-| >50K |
-| <=50K |
+Unique values: 2.
+
+| Value | Samples |
+| :--- | :--- |
+| <=50K | 34014 |
+| >50K | 11208 |

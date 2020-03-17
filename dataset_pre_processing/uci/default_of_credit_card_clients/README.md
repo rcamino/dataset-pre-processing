@@ -122,6 +122,11 @@ Also it seems that the value for -1 was wrong.
 | 8 | payment delay for eight months |
 | 9 | payment delay for nine months and above |
 
-## Target Variable
+### Default payment next month
 
-Default payment in next month: Yes = 1, No = 0.
+Unique values: 2.
+
+| Value | Samples |
+| :--- | :--- |
+| no default payment next month | 23364 |
+| default payment next month | 6636 |

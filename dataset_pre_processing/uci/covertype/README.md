@@ -109,7 +109,9 @@ The variable number of these binary variables can be calculated with `15 + ID - 
 
 (*) USFS/ELU is formed by the two most/least significant digits respectively.
 
-## Class distribution
+### Cover Type
+
+Unique values: 7.
 
 | Class | Samples |
 | :--- | ---: |
@@ -120,4 +122,3 @@ The variable number of these binary variables can be calculated with `15 + ID - 
 | Aspen | 9493 |
 | Douglas-fir | 17367 | 
 | Krummholz | 20510 |
-| Total | 581012

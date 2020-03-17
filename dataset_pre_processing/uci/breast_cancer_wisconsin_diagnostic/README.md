@@ -65,7 +65,7 @@ The target variable is "Diagnosis".
 | 32 | n3_fractal_dimension | numerical | nucleus 3: coastline approximation - 1 |
 
 
-## Class distribution
+### Diagnosis
 
 | Value | Description | Samples |
 | :--- | :--- | :--- |

@@ -84,7 +84,7 @@ The target variable is "spam".
 | 57 | capital_run_length_total | numerical |
 | 58 | spam | binary |
 
-## Class distribution
+### Spam
 
 | Value | Description | Samples |
 | :--- | :--- | :--- |

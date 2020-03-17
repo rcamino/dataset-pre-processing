@@ -93,3 +93,40 @@ The target variable is "shares".
 | 59 | abs_title_subjectivity | numerical | Absolute subjectivity level. |
 | 60 | abs_title_sentiment_polarity | numerical | Absolute polarity level. |
 | 61 | shares | numerical | Number of shares. |
+
+### Is weekend
+
+Unique values: 2.
+
+| Value | Samples |
+| :--- | :--- |
+| 0 | 34454 |
+| 1 | 5190 |
+
+### Data channel
+
+Unique values: 7.
+
+| Value | Samples |
+| :--- | :--- |
+| bus | 6258 |
+| entertainment | 7057 |
+| lifestyle | 2099 |
+| none | 6134 |
+| socmed | 2323 |
+| tech | 7346 |
+| world | 8427 |
+
+### Weekday
+
+Unique values: 7.
+
+| Value | Samples |
+| :--- | :--- |
+| friday | 5701 |
+| monday | 6661 |
+| saturday | 2453 |
+| sunday | 2737 |
+| thursday | 7267 |
+| tuesday | 7390 |
+| wednesday | 7435 |

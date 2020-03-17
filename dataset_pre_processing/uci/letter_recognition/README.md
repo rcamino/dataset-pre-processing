@@ -45,7 +45,9 @@ The target variable is "lettr".
 | 16 | y-ege | mean edge count bottom to top |
 | 17 | yegvx | correlation of y-ege with x |
 
-## Class distribution
+### Lettr
+
+Unique values: 26.
 
 | Class | Samples |
 | :--- | :--- |
