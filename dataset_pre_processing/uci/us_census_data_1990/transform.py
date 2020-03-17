@@ -11,50 +11,46 @@ from scipy.sparse import csr_matrix, save_npz
 from dataset_pre_processing.metadata import create_metadata, create_one_type_dictionary
 
 
+NUM_SAMPLES = 2458285
+
+
 def uscensus_transform(input_path, output_path, metadata_path):
     input_file = open(input_path, "r")
     reader = csv.DictReader(input_file)
 
+    # read the variables from the header
     variables = sorted(reader.fieldnames)
+    # but ignore the ID
     variables.remove("caseid")
 
+    # first read everything to count the values per variable
     categorical_values = {}
     for variable in variables:
         categorical_values[variable] = set()
 
-    print("Counting values...")
     for row_number, row in enumerate(reader):
-        if row_number % 10000 == 0:
-            print("{:d} rows read".format(row_number))
-
         for variable in variables:
             value = row[variable]
             categorical_values[variable].add(value)
 
-    print("Saving metadata...")
-
-    num_samples = row_number + 1
-
+    # now create the metadata
     metadata = create_metadata(variables,
                                create_one_type_dictionary("categorical", variables),
                                categorical_values,
-                               num_samples)
+                               NUM_SAMPLES)
 
-    with open(metadata_path, "w") as metadata_file:
-        json.dump(metadata, metadata_file)
-
+    # go back to the beginning
     input_file.seek(0)
+    # the reader needs to be re-initialized
+    # using tell after reading the headers does not work during the reader iteration
+    reader = csv.DictReader(input_file)
 
+    # now fill the feature matrix with the right encoding
     ones = []
     rows = []
     cols = []
 
-    print("Writing...")
-
     for row_number, row in enumerate(reader):
-        if row_number % 10000 == 0:
-            print("{:d} rows read".format(row_number))
-
         for variable in variables:
             value = row[variable]
             feature_number = metadata["value_to_index"][variable][value]
@@ -63,23 +59,21 @@ def uscensus_transform(input_path, output_path, metadata_path):
             rows.append(row_number)
             cols.append(feature_number)
 
-    output = csr_matrix((ones, (rows, cols)), shape=(num_samples, metadata["num_features"]), dtype=np.uint8)
+    output = csr_matrix((ones, (rows, cols)), shape=(metadata["num_samples"], metadata["num_features"]), dtype=np.uint8)
 
     save_npz(output_path, output)
 
-    print("Done.")
-
     input_file.close()
+
+    with open(metadata_path, "w") as metadata_file:
+        json.dump(metadata, metadata_file)
 
 
 def main(args=None):
-    options_parser = argparse.ArgumentParser(
-        description="Transform the US Census Data (1990) text data into feature matrix."
-                    + " Dataset: https://archive.ics.uci.edu/ml/datasets/US+Census+Data+(1990)."
-    )
+    options_parser = argparse.ArgumentParser(description="Transform the data into a feature matrix.")
 
-    options_parser.add_argument("input", type=str, help="Input USCensus data in text format.")
-    options_parser.add_argument("output", type=str, help="Output features in sparse scipy matrix format.")
+    options_parser.add_argument("input", type=str, help="Input data in text format.")
+    options_parser.add_argument("output", type=str, help="Output features in csr matrix compressed format.")
     options_parser.add_argument("metadata", type=str, help="Metadata in json format.")
 
     options = options_parser.parse_args(args=args)
