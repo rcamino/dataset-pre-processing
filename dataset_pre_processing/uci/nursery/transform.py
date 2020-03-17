@@ -6,8 +6,8 @@ import json
 
 import numpy as np
 
-from dataset_pre_processing.metadata import create_metadata, create_class_to_index, create_one_type_dictionary
-
+from dataset_pre_processing.metadata import create_metadata, create_class_name_to_index, create_one_type_dictionary, \
+    update_class_distribution, update_feature_distributions, validate_class_distribution, validate_num_samples
 
 NUM_SAMPLES = 12960
 
@@ -41,7 +41,7 @@ CLASSES = [
     "spec_prior"
 ]
 
-CLASS_TO_INDEX = create_class_to_index(CLASSES)
+CLASS_TO_INDEX = create_class_name_to_index(CLASSES)
 
 
 def nursery_transform(input_path, features_path, labels_path, metadata_path):
@@ -66,7 +66,12 @@ def nursery_transform(input_path, features_path, labels_path, metadata_path):
             feature_number = metadata["value_to_index"][variable][value]
             features[row_number, feature_number] = 1
 
-    assert row_number == metadata["num_samples"] - 1
+    # add distributions to the metadata
+    update_feature_distributions(metadata, features)
+    update_class_distribution(metadata, labels)
+
+    # validate the known distributions
+    validate_num_samples(metadata, row_number + 1)
 
     np.save(features_path, features)
     np.save(labels_path, labels)

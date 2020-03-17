@@ -5,7 +5,8 @@ import json
 
 import numpy as np
 
-from dataset_pre_processing.metadata import create_metadata, create_one_type_dictionary
+from dataset_pre_processing.metadata import create_metadata, create_one_type_dictionary, update_feature_distributions, \
+    update_class_distribution, validate_num_samples, validate_class_distribution
 from dataset_pre_processing.scaling import scale_and_save_scaler
 
 
@@ -119,13 +120,13 @@ def spambase_transform(input_path, features_path, labels_path, metadata_path, sc
     if scaler_path is not None:
         features = scale_and_save_scaler(features, scaler_path)
 
-    assert i == metadata["num_samples"]
+    # add distributions to the metadata
+    update_feature_distributions(metadata, features)
+    update_class_distribution(metadata, labels)
 
-    num_positive_samples = int(labels.sum())
-    num_negative_samples = labels.shape[0] - num_positive_samples
-
-    assert num_negative_samples == NUM_SAMPLES[0]
-    assert num_positive_samples == NUM_SAMPLES[1]
+    # validate the known distributions
+    validate_num_samples(metadata, i)
+    validate_class_distribution(metadata, NUM_SAMPLES)
 
     np.save(features_path, features)
     np.save(labels_path, labels)

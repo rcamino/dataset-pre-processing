@@ -5,7 +5,8 @@ import json
 
 import numpy as np
 
-from dataset_pre_processing.metadata import create_metadata
+from dataset_pre_processing.metadata import create_metadata, update_feature_distributions, update_class_distribution, \
+    validate_num_samples, validate_class_distribution
 from dataset_pre_processing.scaling import scale_and_save_scaler
 
 
@@ -164,7 +165,13 @@ def covertype_transform(input_path, features_path, labels_path, metadata_path, s
     if scaler_path is not None:
         features = scale_and_save_scaler(features, scaler_path)
 
-    assert sample_index == metadata["num_samples"]
+    # add distributions to the metadata
+    update_feature_distributions(metadata, features)
+    update_class_distribution(metadata, labels)
+
+    # validate the known distributions
+    validate_num_samples(metadata, sample_index)
+    validate_class_distribution(metadata, NUM_SAMPLES)
 
     np.save(features_path, features)
     np.save(labels_path, labels)

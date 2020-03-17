@@ -5,7 +5,8 @@ import json
 
 import numpy as np
 
-from dataset_pre_processing.metadata import create_metadata, create_class_to_index, create_one_type_dictionary
+from dataset_pre_processing.metadata import create_metadata, create_class_name_to_index, create_one_type_dictionary, \
+    update_feature_distributions, update_class_distribution, validate_class_distribution, validate_num_samples
 from dataset_pre_processing.scaling import scale_and_save_scaler
 
 
@@ -86,7 +87,7 @@ CLASSES = [
     "Z",
 ]
 
-CLASS_TO_INDEX = create_class_to_index(CLASSES)
+CLASS_TO_INDEX = create_class_name_to_index(CLASSES)
 
 
 def letter_recognition_transform(input_path, features_path, labels_path, metadata_path, scaler_path):
@@ -124,11 +125,13 @@ def letter_recognition_transform(input_path, features_path, labels_path, metadat
     if scaler_path is not None:
         features = scale_and_save_scaler(features, scaler_path)
 
-    assert i == metadata["num_samples"]
+    # add distributions to the metadata
+    update_feature_distributions(metadata, features)
+    update_class_distribution(metadata, labels)
 
-    for class_index in range(len(NUM_SAMPLES)):
-        num_samples_class = (labels == class_index).sum()
-        assert num_samples_class == NUM_SAMPLES[class_index]
+    # validate the known distributions
+    validate_num_samples(metadata, i)
+    validate_class_distribution(metadata, NUM_SAMPLES)
 
     np.save(features_path, features)
     np.save(labels_path, labels)

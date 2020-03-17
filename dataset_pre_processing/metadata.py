@@ -1,3 +1,8 @@
+from collections import Counter
+
+import numpy as np
+
+
 CATEGORICAL_FEATURE_FORMAT = "{}_{:d}"
 
 
@@ -95,5 +100,45 @@ def create_metadata(variables, variable_types, categorical_values={}, num_sample
     return metadata
 
 
-def create_class_to_index(classes):
+def create_class_name_to_index(classes):
     return dict([(c, i) for i, c in enumerate(classes)])
+
+
+def update_feature_distributions(metadata, features):
+    # I use float and int instead of numpy types because they are not JSON serializable
+    metadata["variable_distributions"] = {}
+    for variable, variable_type in zip(metadata["variables"], metadata["variable_types"]):
+        if variable_type == "numerical":
+            feature_number = metadata["value_to_index"][variable]
+            metadata["variable_distributions"][variable] = {
+                "median": float(np.median(features[:, feature_number])),
+                "mean": float(np.mean(features[:, feature_number])),
+                "std": float(np.std(features[:, feature_number])),
+                "min": float(np.min(features[:, feature_number])),
+                "max": float(np.max(features[:, feature_number])),
+            }
+        elif variable_type == "categorical":
+            metadata["variable_distributions"][variable] = {}
+            for value, feature_number in metadata["value_to_index"][variable].items():
+                metadata["variable_distributions"][variable][value] = int(np.sum(features[:, feature_number]))
+        else:
+            raise Exception("Invalid variable type '{}' for variable '{}'.".format(variable_type, variable))
+
+
+def update_class_distribution(metadata, labels):
+    assert "classes" in metadata
+    samples_by_class_index = Counter(labels)
+    metadata["class_distribution"] = {}
+    for class_index, class_name in enumerate(metadata["classes"]):
+        metadata["class_distribution"][class_name] = samples_by_class_index[class_index]
+
+
+def validate_class_distribution(metadata, samples_by_class_index):
+    assert "class_distribution" in metadata
+    class_name_to_index = create_class_name_to_index(metadata["class_distribution"])
+    for class_name, class_index in class_name_to_index.items():
+        assert metadata["class_distribution"][class_name] == samples_by_class_index[class_index]
+
+
+def validate_num_samples(metadata, num_samples):
+    assert metadata["num_samples"] == num_samples
