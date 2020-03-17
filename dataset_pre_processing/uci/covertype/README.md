@@ -1,8 +1,7 @@
 # Covertype
 
-Source: https://archive.ics.uci.edu/ml/datasets/Covertype
-
 Forest cover type.
+[[Source]](https://archive.ics.uci.edu/ml/datasets/Covertype)
 
 ## Samples
 

@@ -1,8 +1,7 @@
 # Letter recognition
 
-Source: https://archive.ics.uci.edu/ml/datasets/Letter+Recognition
-
 Database of character image features; try to identify the letter.
+[[Source]](https://archive.ics.uci.edu/ml/datasets/Letter+Recognition)
 
 ## Samples
 

@@ -1,8 +1,7 @@
 # Spambase
 
-Source: https://archive.ics.uci.edu/ml/datasets/Spambase
-
 Classifying Email as Spam or Non-Spam.
+[[Source]](https://archive.ics.uci.edu/ml/datasets/Spambase)
 
 ## Samples
 

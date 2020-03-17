@@ -1,8 +1,7 @@
 # Breast Cancer Wisconsin (Diagnostic)
 
-Source: https://archive.ics.uci.edu/ml/datasets/Breast%2BCancer%2BWisconsin%2B%28Diagnostic%29
-
 Diagnostic Wisconsin Breast Cancer Database.
+[[Source]](https://archive.ics.uci.edu/ml/datasets/Breast%2BCancer%2BWisconsin%2B%28Diagnostic%29)
 
 **WARNING**: can be confused with
 

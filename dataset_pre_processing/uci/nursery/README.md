@@ -1,8 +1,7 @@
 # Nursery
 
-Source: https://archive.ics.uci.edu/ml/datasets/Nursery
-
 Nursery Database was derived from a hierarchical decision model originally developed to rank applications for nursery schools.
+[[Source]](https://archive.ics.uci.edu/ml/datasets/Nursery)
 
 ## Samples
 
