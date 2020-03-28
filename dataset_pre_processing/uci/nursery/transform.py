@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import argparse
 import csv
 import json
@@ -54,24 +52,30 @@ def nursery_transform(input_path, features_path, labels_path, metadata_path):
                                NUM_SAMPLES,
                                CLASSES)
 
+    # initialize outputs
     features = np.zeros((metadata["num_samples"], metadata["num_features"]), dtype=np.uint8)
     labels = np.zeros(metadata["num_samples"], dtype=np.int32)
 
-    for row_number, row in enumerate(reader):
-        labels[row_number] = CLASS_TO_INDEX[row["class"]]
+    # transform
+    sample_index = 0
+    for row in reader:
+        labels[sample_index] = CLASS_TO_INDEX[row["class"]]
 
         for variable in VARIABLES:
             value = row[variable]
             assert value in VALUES[variable], "'{}' is not a valid value for '{}'".format(value, variable)
-            feature_number = metadata["value_to_index"][variable][value]
-            features[row_number, feature_number] = 1
+            feature_index = metadata["value_to_index"][variable][value]
+            features[sample_index, feature_index] = 1
+
+        # next row
+        sample_index += 1
 
     # add distributions to the metadata
     update_feature_distributions(metadata, features)
     update_class_distribution(metadata, labels)
 
     # validate the known distributions
-    validate_num_samples(metadata, row_number + 1)
+    validate_num_samples(metadata, sample_index)
 
     np.save(features_path, features)
     np.save(labels_path, labels)

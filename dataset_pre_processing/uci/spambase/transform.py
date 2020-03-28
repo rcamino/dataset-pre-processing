@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import argparse
 import json
 
@@ -90,11 +88,12 @@ def spambase_transform(input_path, features_path, labels_path, metadata_path, sc
 
     input_file = open(input_path, "r")
 
+    # initialize outputs
     features = np.zeros((metadata["num_samples"], metadata["num_features"]), dtype=np.float32)
     labels = np.zeros(metadata["num_samples"], dtype=np.int32)
 
     # transform
-    i = 0
+    sample_index = 0
     line = input_file.readline()
     while line != "":
         line = line.rstrip("\n")
@@ -107,13 +106,14 @@ def spambase_transform(input_path, features_path, labels_path, metadata_path, sc
         # assign each column with the right mapping
         for variable, value in zip(VARIABLES, values[:-1]):
             value = float(value)
-            features[i, metadata["value_to_index"][variable]] = value
+            features[sample_index, metadata["value_to_index"][variable]] = value
 
         # the last value is the label
-        labels[i] = int(values[-1])
+        labels[sample_index] = int(values[-1])
 
         # next row
-        i += 1
+        sample_index += 1
+        # next line
         line = input_file.readline()
 
     # scale
@@ -125,7 +125,7 @@ def spambase_transform(input_path, features_path, labels_path, metadata_path, sc
     update_class_distribution(metadata, labels)
 
     # validate the known distributions
-    validate_num_samples(metadata, i)
+    validate_num_samples(metadata, sample_index)
     validate_class_distribution(metadata, NUM_SAMPLES)
 
     np.save(features_path, features)

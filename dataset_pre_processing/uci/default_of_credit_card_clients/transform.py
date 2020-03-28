@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import argparse
 import csv
 import json
@@ -101,25 +99,30 @@ def default_credit_card_transform(input_path, features_path, labels_path, metada
 
     metadata = create_metadata(variables, TYPES, VALUES, NUM_SAMPLES, CLASSES)
 
+    # initialize outputs
     features = np.zeros((metadata["num_samples"], metadata["num_features"]), dtype=np.float32)
     labels = np.zeros(metadata["num_samples"], dtype=np.int32)
 
     # transform
-    for i, row in enumerate(reader):
-        for j, variable in enumerate(metadata["variables"]):
+    sample_index = 0
+    for row in reader:
+        for variable in metadata["variables"]:
             value = row[variable]
             if TYPES[variable] == "numerical":
                 value = float(value)
-                features[i, metadata["value_to_index"][variable]] = value
+                features[sample_index, metadata["value_to_index"][variable]] = value
             elif TYPES[variable] == "categorical":
                 value = int(float(value))
                 assert value in ORIGINAL_ENCODING_TO_VALUES[variable], \
                     "'{}' is not a valid value for '{}'".format(value, variable)
                 value = ORIGINAL_ENCODING_TO_VALUES[variable][value]
-                features[i, metadata["value_to_index"][variable][value]] = 1.0
+                features[sample_index, metadata["value_to_index"][variable][value]] = 1.0
 
         # the class needs to be transformed
-        labels[i] = int(row["default payment next month"].replace(".0", ""))
+        labels[sample_index] = int(row["default payment next month"].replace(".0", ""))
+
+        # next row
+        sample_index += 1
 
     # scale
     if scaler_path is not None:
@@ -130,7 +133,7 @@ def default_credit_card_transform(input_path, features_path, labels_path, metada
     update_class_distribution(metadata, labels)
 
     # validate the known distributions
-    validate_num_samples(metadata, i + 1)
+    validate_num_samples(metadata, sample_index)
 
     np.save(features_path, features)
     np.save(labels_path, labels)

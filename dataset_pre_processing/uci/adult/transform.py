@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import argparse
 import json
 
@@ -45,7 +43,7 @@ TYPES = {
 }
 
 VALUES = {
-    "workclass":{
+    "workclass": {
         "Private",
         "Self-emp-not-inc",
         "Self-emp-inc",
@@ -55,7 +53,7 @@ VALUES = {
         "Without-pay",
         "Never-worked"
     },
-    "education":{
+    "education": {
         "Bachelors",
         "Some-college",
         "11th",
@@ -73,7 +71,7 @@ VALUES = {
         "5th-6th",
         "Preschool"
     },
-    "marital-status":{
+    "marital-status": {
         "Married-civ-spouse",
         "Divorced",
         "Never-married",
@@ -82,7 +80,7 @@ VALUES = {
         "Married-spouse-absent",
         "Married-AF-spouse"
     },
-    "occupation":{
+    "occupation": {
         "Tech-support",
         "Craft-repair",
         "Other-service",
@@ -98,7 +96,7 @@ VALUES = {
         "Protective-serv",
         "Armed-Forces"
     },
-    "relationship":{
+    "relationship": {
         "Wife",
         "Own-child",
         "Husband",
@@ -106,18 +104,18 @@ VALUES = {
         "Other-relative",
         "Unmarried"
     },
-    "race":{
+    "race": {
         "White",
         "Asian-Pac-Islander",
         "Amer-Indian-Eskimo",
         "Other",
         "Black"
     },
-    "sex":{
+    "sex": {
         "Female",
         "Male"
     },
-    "native-country":{
+    "native-country": {
         "United-States",
         "Cambodia",
         "England",
@@ -228,9 +226,12 @@ def adult_transform(train_path, test_path, features_path, labels_path, metadata_
 
 
 def adult_transform_file(input_file, num_samples, num_features, value_to_index, ignore_missing):
+    # initialize outputs
     features = np.zeros((num_samples, num_features), dtype=np.float32)
     labels = np.zeros(num_samples, dtype=np.int32)
-    i = 0
+
+    # transform
+    sample_index = 0
     line = input_file.readline()
     while line != "":
         line = line.rstrip("\n.")
@@ -251,24 +252,27 @@ def adult_transform_file(input_file, num_samples, num_features, value_to_index, 
                         value = np.nan
                     else:
                         value = float(value)
-                    features[i, value_to_index[variable]] = value
+                    features[sample_index, value_to_index[variable]] = value
                 elif TYPES[variable] == "categorical":
                     if value == "?" or value == "":
                         for possible_value in value_to_index[variable].keys():
-                            features[i, value_to_index[variable][possible_value]] = np.nan
+                            features[sample_index, value_to_index[variable][possible_value]] = np.nan
                     else:  # set all the value as nan
                         assert value in VALUES[variable],\
                             "'{}' is not a valid value for '{}'".format(value, variable)
-                        features[i, value_to_index[variable][value]] = 1.0
+                        features[sample_index, value_to_index[variable][value]] = 1.0
 
             # the last value is the class
-            labels[i] = CLASS_TO_INDEX[values[-1]]
+            labels[sample_index] = CLASS_TO_INDEX[values[-1]]
 
-            i += 1
+            # next row (only here when the value was used)
+            sample_index += 1
 
+        # next line
         line = input_file.readline()
 
-    assert i == num_samples
+    # validate number of samples
+    assert sample_index == num_samples
 
     return features, labels
 

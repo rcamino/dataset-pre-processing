@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import argparse
 import json
 
@@ -134,6 +132,7 @@ def covertype_transform(input_path, features_path, labels_path, metadata_path, s
 
     input_file = open(input_path, "r")
 
+    # initialize outputs
     features = np.zeros((metadata["num_samples"], metadata["num_features"]), dtype=np.float32)
     labels = np.zeros(metadata["num_samples"], dtype=np.int32)
 
@@ -157,9 +156,10 @@ def covertype_transform(input_path, features_path, labels_path, metadata_path, s
             # the class needs to be transformed
             labels[sample_index] = class_number
 
-        sample_index += 1
-
+        # next line
         line = input_file.readline()
+        # next row
+        sample_index += 1
 
     # scale
     if scaler_path is not None:

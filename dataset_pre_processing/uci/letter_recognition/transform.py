@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import argparse
 import json
 
@@ -99,11 +97,12 @@ def letter_recognition_transform(input_path, features_path, labels_path, metadat
 
     input_file = open(input_path, "r")
 
+    # initialize outputs
     features = np.zeros((metadata["num_samples"], metadata["num_features"]), dtype=np.float32)
     labels = np.zeros(metadata["num_samples"], dtype=np.int32)
 
     # transform
-    i = 0
+    sample_index = 0
     line = input_file.readline()
     while line != "":
         line = line.rstrip("\n")
@@ -111,15 +110,16 @@ def letter_recognition_transform(input_path, features_path, labels_path, metadat
 
         assert len(values) - 1 == len(VARIABLES), str((len(values) - 1, len(VARIABLES)))
 
-        for j, value in enumerate(values[1:]):
+        for feature_index, value in enumerate(values[1:]):
             value = float(value)
-            features[i, j] = value
+            features[sample_index, feature_index] = value
 
-        labels[i] = CLASS_TO_INDEX[values[0]]
+        labels[sample_index] = CLASS_TO_INDEX[values[0]]
 
-        i += 1
-
+        # next line
         line = input_file.readline()
+        # next row
+        sample_index += 1
 
     # scale
     if scaler_path is not None:
@@ -130,7 +130,7 @@ def letter_recognition_transform(input_path, features_path, labels_path, metadat
     update_class_distribution(metadata, labels)
 
     # validate the known distributions
-    validate_num_samples(metadata, i)
+    validate_num_samples(metadata, sample_index)
     validate_class_distribution(metadata, NUM_SAMPLES)
 
     np.save(features_path, features)

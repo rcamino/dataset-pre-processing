@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import argparse
 import csv
 import json
@@ -113,7 +111,7 @@ def build_mappings():
 
             # add the new value for the categorical variable
             values[variable].append(value)
-        # if it is one of the non-binary variables (numerical and also one binary)
+        # if it is one of the non-one-hot-encoded categorical variables (numerical or the only one that is binary)
         else:
             # identity mapping
             variables.append(original_variable)
@@ -133,16 +131,18 @@ def online_news_popularity_transform(input_path, features_path, labels_path, met
 
     reader.fieldnames = [variable.strip() for variable in reader.fieldnames]
 
+    # initialize outputs
     features = np.zeros((metadata["num_samples"], metadata["num_features"]), dtype=np.float32)
     labels = np.zeros(metadata["num_samples"], dtype=np.float32)
 
     # transform
-    for i, row in enumerate(reader):
-        for j, variable in enumerate(metadata["variables"]):
+    sample_index = 0
+    for row in reader:
+        for variable in metadata["variables"]:
             # numerical variable
             if TYPES[variable] == "numerical":
                 value = float(row[variable])
-                features[i, metadata["value_to_index"][variable]] = value
+                features[sample_index, metadata["value_to_index"][variable]] = value
 
             # categorical variable
             elif TYPES[variable] == "categorical":
@@ -174,20 +174,23 @@ def online_news_popularity_transform(input_path, features_path, labels_path, met
                         raise Exception("'{}' has no valid value".format(variable))
 
                 # set the categorical variable flag in the mapped feature
-                features[i, metadata["value_to_index"][variable][value]] = 1.0
+                features[sample_index, metadata["value_to_index"][variable][value]] = 1.0
 
             # binary variable
             elif TYPES[variable] == "binary":
                 value = read_binary(row[variable])
                 assert value in [0, 1], "'{}' is not a valid value for '{}'".format(value, variable)
-                features[i, metadata["value_to_index"][variable][value]] = 1.0
+                features[sample_index, metadata["value_to_index"][variable][value]] = 1.0
 
             # unknown variable type
             else:
                 raise Exception("Unknown variable type.")
 
         # label
-        labels[i] = row["shares"]
+        labels[sample_index] = row["shares"]
+
+        # next row
+        sample_index += 1
 
     # scale
     if scaler_path is not None:
@@ -197,7 +200,7 @@ def online_news_popularity_transform(input_path, features_path, labels_path, met
     update_feature_distributions(metadata, features)
 
     # validate the known distributions
-    validate_num_samples(metadata, i + 1)
+    validate_num_samples(metadata, sample_index)
 
     np.save(features_path, features)
     np.save(labels_path, labels)
