@@ -179,7 +179,7 @@ NUM_SAMPLES = {
 }
 
 
-def adult_transform(train_path, test_path, features_path, labels_path, metadata_path, ignore_missing, scaler_path):
+def transform(train_path, test_path, features_path, labels_path, metadata_path, ignore_missing, scaler_path):
 
     num_samples_train = NUM_SAMPLES[ignore_missing]["train"]
     num_samples_test = NUM_SAMPLES[ignore_missing]["test"]
@@ -294,13 +294,13 @@ def main(args=None):
 
     options = options_parser.parse_args(args=args)
 
-    adult_transform(options.train,
-                    options.test,
-                    options.features,
-                    options.labels,
-                    options.metadata,
-                    options.ignore_missing,
-                    options.scaler)
+    transform(options.train,
+              options.test,
+              options.features,
+              options.labels,
+              options.metadata,
+              options.ignore_missing,
+              options.scaler)
 
 
 if __name__ == "__main__":

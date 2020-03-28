@@ -42,7 +42,7 @@ CLASSES = [
 CLASS_TO_INDEX = create_class_name_to_index(CLASSES)
 
 
-def nursery_transform(input_path, features_path, labels_path, metadata_path):
+def transform(input_path, features_path, labels_path, metadata_path):
     input_file = open(input_path, "r")
     reader = csv.DictReader(input_file, fieldnames=VARIABLES + ["class"])
 
@@ -96,7 +96,7 @@ def main(args=None):
 
     options = options_parser.parse_args(args=args)
 
-    nursery_transform(options.input, options.features, options.labels, options.metadata)
+    transform(options.input, options.features, options.labels, options.metadata)
 
 
 if __name__ == "__main__":

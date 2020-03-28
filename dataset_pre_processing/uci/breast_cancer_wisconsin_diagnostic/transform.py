@@ -57,7 +57,7 @@ CLASS_TO_INDEX = {
 }
 
 
-def breast_transform(input_path, features_path, labels_path, metadata_path, scaler_path):
+def transform(input_path, features_path, labels_path, metadata_path, scaler_path):
     metadata = create_metadata(VARIABLES,
                                create_one_type_dictionary("numerical", VARIABLES),
                                {},
@@ -129,11 +129,7 @@ def main(args=None):
 
     options = options_parser.parse_args(args=args)
 
-    breast_transform(options.input,
-                     options.features,
-                     options.labels,
-                     options.metadata,
-                     options.scaler)
+    transform(options.input, options.features, options.labels, options.metadata, options.scaler)
 
 
 if __name__ == "__main__":

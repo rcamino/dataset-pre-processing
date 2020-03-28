@@ -89,7 +89,7 @@ CLASSES = [
 ]
 
 
-def default_credit_card_transform(input_path, features_path, labels_path, metadata_path, scaler_path):
+def transform(input_path, features_path, labels_path, metadata_path, scaler_path):
     input_file = open(input_path, "r")
     reader = csv.DictReader(input_file)
 
@@ -157,11 +157,7 @@ def main(args=None):
 
     options = options_parser.parse_args(args=args)
 
-    default_credit_card_transform(options.input,
-                                  options.features,
-                                  options.labels,
-                                  options.metadata,
-                                  options.scaler)
+    transform(options.input, options.features, options.labels, options.metadata, options.scaler)
 
 
 if __name__ == "__main__":

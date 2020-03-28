@@ -12,7 +12,7 @@ from dataset_pre_processing.metadata import create_metadata, create_one_type_dic
 NUM_SAMPLES = 2458285
 
 
-def uscensus_transform(input_path, output_path, metadata_path):
+def transform(input_path, output_path, metadata_path):
     input_file = open(input_path, "r")
     reader = csv.DictReader(input_file)
 
@@ -76,7 +76,7 @@ def main(args=None):
 
     options = options_parser.parse_args(args=args)
 
-    uscensus_transform(options.input, options.output, options.metadata)
+    transform(options.input, options.output, options.metadata)
 
 
 if __name__ == "__main__":

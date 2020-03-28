@@ -123,7 +123,7 @@ def build_mappings():
 VARIABLES, TYPES, VALUES = build_mappings()
 
 
-def online_news_popularity_transform(input_path, features_path, labels_path, metadata_path, scaler_path):
+def transform(input_path, features_path, labels_path, metadata_path, scaler_path):
     metadata = create_metadata(VARIABLES, TYPES, VALUES, NUM_SAMPLES)
 
     input_file = open(input_path, "r")
@@ -224,11 +224,7 @@ def main(args=None):
 
     options = options_parser.parse_args(args=args)
 
-    online_news_popularity_transform(options.input,
-                                     options.features,
-                                     options.labels,
-                                     options.metadata,
-                                     options.scaler)
+    transform(options.input, options.features, options.labels, options.metadata, options.scaler)
 
 
 if __name__ == "__main__":
