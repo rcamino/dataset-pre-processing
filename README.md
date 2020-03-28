@@ -1,6 +1,6 @@
 # dataset-pre-processing
 
-Pre-processing of popular datasets (mostly UCI from repositories). The methods include:
+Pre-processing of popular datasets (from repositories UCI for now). The methods include:
 
 - One-hot-encoding of categorical variables
 - Min-max-scaling of numerical variables into the range [0, 1]
@@ -9,7 +9,6 @@ Pre-processing of popular datasets (mostly UCI from repositories). The methods i
   - Number of features
   - Variable types
   - One-hot-encoding dictionaries
-  - Min-max-scaling limits
   - Class names
   
  Scripts for downloading datasets and pre-processing them with default parameters are also included.
