@@ -19,10 +19,10 @@ def types_to_sorted_lists(variable_types, variables=None):
     numerical_variables = []
     for variable in variables:
         variable_type = variable_types[variable]
-        if variable_type == "categorical":
-            categorical_variables.append(variable)
-        elif variable_type == "binary":
+        if variable_type == "binary":
             binary_variables.append(variable)
+        elif variable_type == "categorical":
+            categorical_variables.append(variable)
         elif variable_type == "numerical":
             numerical_variables.append(variable)
         else:
@@ -36,8 +36,8 @@ def types_to_sorted_lists(variable_types, variables=None):
 
 def create_metadata(variables, variable_types, categorical_values={}, num_samples=None, classes=None):
     binary_variables, categorical_variables, numerical_variables = types_to_sorted_lists(variable_types, variables)
-    sorted_variables = binary_variables + categorical_variables + numerical_variables
 
+    sorted_variables = []
     feature_number = 0
     features = []
     value_to_index = {}
@@ -45,7 +45,16 @@ def create_metadata(variables, variable_types, categorical_values={}, num_sample
     variable_sizes = []
     variable_types = []
 
+    for variable in binary_variables:
+        sorted_variables.append(variable)
+        variable_types.append("binary")
+        variable_sizes.append(1)
+        value_to_index[variable] = feature_number
+        feature_number += 1
+        features.append(variable)
+
     for variable in categorical_variables:
+        sorted_variables.append(variable)
         variable_types.append("categorical")
         values = sorted(categorical_values[variable])
         variable_sizes.append(len(values))
@@ -56,18 +65,8 @@ def create_metadata(variables, variable_types, categorical_values={}, num_sample
             feature_number += 1
             features.append(CATEGORICAL_FEATURE_FORMAT.format(variable, value_index))
 
-    for variable in binary_variables:
-        variable_types.append("categorical")
-        values = [0, 1]
-        variable_sizes.append(2)
-        value_to_index[variable] = {}
-        for value_index, value in enumerate(values):
-            index_to_value.append((variable, value))
-            value_to_index[variable][value] = feature_number
-            feature_number += 1
-            features.append(CATEGORICAL_FEATURE_FORMAT.format(variable, value_index))
-
     for variable in numerical_variables:
+        sorted_variables.append(variable)
         variable_types.append("numerical")
         variable_sizes.append(1)
         value_to_index[variable] = feature_number
@@ -108,7 +107,14 @@ def update_feature_distributions(metadata, features):
     # I use float and int instead of numpy types because they are not JSON serializable
     metadata["variable_distributions"] = {}
     for variable, variable_type in zip(metadata["variables"], metadata["variable_types"]):
-        if variable_type == "numerical":
+        if variable_type == "binary":
+            ones = int(np.sum(features[:, metadata["value_to_index"][variable]]))
+            metadata["variable_distributions"][variable] = {0: len(features) - ones, 1: ones}
+        elif variable_type == "categorical":
+            metadata["variable_distributions"][variable] = {}
+            for value, feature_number in metadata["value_to_index"][variable].items():
+                metadata["variable_distributions"][variable][value] = int(np.sum(features[:, feature_number]))
+        elif variable_type == "numerical":
             feature_number = metadata["value_to_index"][variable]
             metadata["variable_distributions"][variable] = {
                 "median": float(np.median(features[:, feature_number])),
@@ -117,10 +123,6 @@ def update_feature_distributions(metadata, features):
                 "min": float(np.min(features[:, feature_number])),
                 "max": float(np.max(features[:, feature_number])),
             }
-        elif variable_type == "categorical":
-            metadata["variable_distributions"][variable] = {}
-            for value, feature_number in metadata["value_to_index"][variable].items():
-                metadata["variable_distributions"][variable][value] = int(np.sum(features[:, feature_number]))
         else:
             raise Exception("Invalid variable type '{}' for variable '{}'.".format(variable_type, variable))
 

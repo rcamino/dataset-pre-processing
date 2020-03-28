@@ -180,7 +180,7 @@ def online_news_popularity_transform(input_path, features_path, labels_path, met
             elif TYPES[variable] == "binary":
                 value = read_binary(row[variable])
                 assert value in [0, 1], "'{}' is not a valid value for '{}'".format(value, variable)
-                features[sample_index, metadata["value_to_index"][variable][value]] = 1.0
+                features[sample_index, metadata["value_to_index"][variable]] = value
 
             # unknown variable type
             else:
