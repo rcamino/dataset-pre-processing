@@ -107,24 +107,29 @@ def update_feature_distributions(metadata, features):
     # I use float and int instead of numpy types because they are not JSON serializable
     metadata["variable_distributions"] = {}
     for variable, variable_type in zip(metadata["variables"], metadata["variable_types"]):
-        if variable_type == "binary":
-            ones = int(np.sum(features[:, metadata["value_to_index"][variable]]))
-            metadata["variable_distributions"][variable] = {0: len(features) - ones, 1: ones}
-        elif variable_type == "categorical":
-            metadata["variable_distributions"][variable] = {}
-            for value, feature_number in metadata["value_to_index"][variable].items():
-                metadata["variable_distributions"][variable][value] = int(np.sum(features[:, feature_number]))
-        elif variable_type == "numerical":
-            feature_number = metadata["value_to_index"][variable]
-            metadata["variable_distributions"][variable] = {
-                "median": float(np.median(features[:, feature_number])),
-                "mean": float(np.mean(features[:, feature_number])),
-                "std": float(np.std(features[:, feature_number])),
-                "min": float(np.min(features[:, feature_number])),
-                "max": float(np.max(features[:, feature_number])),
-            }
-        else:
-            raise Exception("Invalid variable type '{}' for variable '{}'.".format(variable_type, variable))
+        metadata["variable_distributions"][variable] = create_feature_distribution(features,
+                                                                                   variable_type,
+                                                                                   metadata["value_to_index"][variable])
+
+
+def create_feature_distribution(features, variable_type, variable_value_to_index):
+    if variable_type == "binary":
+        ones = int(np.sum(features[:, variable_value_to_index]))
+        return {0: len(features) - ones, 1: ones}
+    elif variable_type == "categorical":
+        distribution = {}
+        for value, feature_number in variable_value_to_index.items():
+            distribution[value] = int(np.sum(features[:, feature_number]))
+    elif variable_type == "numerical":
+        return {
+            "median": float(np.median(features[:, variable_value_to_index])),
+            "mean": float(np.mean(features[:, variable_value_to_index])),
+            "std": float(np.std(features[:, variable_value_to_index])),
+            "min": float(np.min(features[:, variable_value_to_index])),
+            "max": float(np.max(features[:, variable_value_to_index])),
+        }
+    else:
+        raise Exception("Invalid variable type '{}'.".format(variable_type))
 
 
 def update_class_distribution(metadata, labels):
