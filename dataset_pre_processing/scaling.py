@@ -22,7 +22,7 @@ def _concatenate_and_split_if_needed(features, action, labels=None):
 def scale_and_save_scaler(features, scaler_path, labels=None, feature_range=(0, 1)):
     def action(data):
         scaler = MinMaxScaler(feature_range=feature_range, copy=True)
-        scaler.fit_transform(data)
+        data = scaler.fit_transform(data)
 
         with open(scaler_path, "wb") as scaler_file:
             pickle.dump(scaler, scaler_file)
@@ -37,9 +37,7 @@ def scale(features, scaler_path, labels=None):
         with open(scaler_path, "rb") as scaler_file:
             scaler = pickle.load(scaler_file)
 
-        scaler.transform(data)
-
-        return data
+        return scaler.transform(data)
 
     return _concatenate_and_split_if_needed(features, action, labels=labels)
 
@@ -49,8 +47,6 @@ def inverse_scale(features, scaler_path, labels=None):
         with open(scaler_path, "rb") as scaler_file:
             scaler = pickle.load(scaler_file)
 
-        scaler.inverse_transform(data)
-
-        return data
+        return scaler.inverse_transform(data)
 
     return _concatenate_and_split_if_needed(features, action, labels=labels)
