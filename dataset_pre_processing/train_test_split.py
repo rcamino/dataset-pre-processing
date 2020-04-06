@@ -5,6 +5,22 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 
 
+def compute_size_of_each_side(features, one_side_value):
+    # if the size is a ratio
+    if 0 < one_side_value < 1:
+        size_one_side = one_side_value
+        size_other_side = 1.0 - one_side_value
+    # if the size is not a ratio it must be a valid amount of samples
+    elif 0 < one_side_value < features.shape[0]:
+        size_one_side = int(one_side_value)
+        size_other_side = features.shape[0] - size_one_side
+    # if the size is invalid
+    else:
+        raise Exception("Invalid size.")
+
+    return size_one_side, size_other_side
+
+
 def main():
     options_parser = argparse.ArgumentParser(description="Split features file into train and test files.")
 
@@ -28,17 +44,8 @@ def main():
     # load the features
     features = np.load(options.features)
 
-    # if the train size is a ratio
-    if 0 < options.train_size < 1:
-        train_size = options.train_size
-        test_size = 1.0 - options.train_size  # a warning is thrown if not specified
-    # if the train size is not a ratio it must be a valid number
-    elif options.train_size < features.shape[0]:
-        train_size = int(options.train_size)
-        test_size = features.shape[0] - train_size  # a warning is thrown if not specified
-    # if the train size is invalid
-    else:
-        raise Exception("Invalid train size.")
+    # compute train and test size
+    train_size, test_size = compute_size_of_each_side(features, options.train_size)
 
     # without labels
     if options.labels is None:
