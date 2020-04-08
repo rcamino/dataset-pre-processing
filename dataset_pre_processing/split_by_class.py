@@ -51,6 +51,7 @@ def main(args=None):
     # remove class information from metadata
     metadata.pop("classes")
     metadata.pop("num_classes")
+    metadata.pop("class_distribution")
 
     # save the modified metadata
     with open(options.output_metadata, "w") as metadata_file:
