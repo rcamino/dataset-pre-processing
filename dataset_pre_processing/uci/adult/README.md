@@ -18,7 +18,7 @@ The data is originally split into train and test and has some missing values:
 
 | Numerical | Categorical | Binary | Total |
 | :--- | :--- | :--- | :--- |
-| 6 | 9 | 0 | 15 |
+| 6 | 8 | 1 | 15 |
 
 | Predictive | Non-Predictive | Target | Total |
 | :--- | :--- | :--- | :--- |
@@ -50,7 +50,7 @@ The target variable is "income".
 | 12 | capital-loss | numerical |
 | 13 | hours-per-week | numerical |
 | 14 | native-country | categorical |
-| 15 | income | categorical |
+| 15 | income | binary |
 
 ### Workclass
 
