@@ -16,10 +16,10 @@ def main():
     if directory is None:
         directory = os.getcwd()
 
-    file_path = os.path.join(directory, "breast-cancer-wisconsin.data")
+    file_path = os.path.join(directory, "wdbc.data")
 
     wget.download(
-        "https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/breast-cancer-wisconsin.data",
+        "https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data",
         file_path
     )
     print()
