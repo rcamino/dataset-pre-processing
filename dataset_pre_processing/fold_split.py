@@ -23,6 +23,13 @@ def main():
     options_parser.add_argument("--labels_template", type=str,
                                 help="Output labels file name template. Variables: name, number, total.")
 
+    options_parser.add_argument("--others", type=str,
+                                help="Additional inputs (comma separated) in numpy array format.")
+
+    options_parser.add_argument("--other_templates", type=str,
+                                help="Additional outputs file name templates (comma separated)."
+                                     + " Variables: name, number, total.")
+
     options_parser.add_argument("--shuffle", default=False, action="store_true",
                                 help="Shuffle samples before the split.")
 
@@ -41,11 +48,30 @@ def main():
     # prepare labels if used
     labels_used = options.labels is not None
     if labels_used:
+        assert options.labels_template is not None,\
+            "Arguments 'labels' and 'labels_template' should be present at the same time."
+
         labels = np.load(options.labels)
         labels_template = os.path.join(options.output_directory, options.labels_template)
     else:
         labels = None
         labels_template = None
+
+    # prepare others if used
+    if options.others is not None:
+        assert options.other_templates is not None,\
+            "Arguments 'others' and 'other_templates' should be present at the same time."
+
+        others = [np.load(other_path)
+                  for other_path in options.others.split(",")]
+
+        other_templates = [os.path.join(options.output_directory, other_template)
+                           for other_template in options.other_templates.split(",")]
+
+        assert len(others) == len(other_templates), "Arguments 'others' and 'other_templates' should have the same size."
+    else:
+        others = []
+        other_templates = []
 
     # create folds
     if labels_used and options.stratify:
@@ -82,6 +108,8 @@ def main():
             np.save(features_template.format(name="val", fold=fold, total=options.folds), features[val_index, :])
             if labels_used:
                 np.save(labels_template.format(name="val", fold=fold, total=options.folds), labels[val_index])
+            for other, other_template in zip(others, other_templates):
+                np.save(other_template.format(name="val", fold=fold, total=options.folds), other[val_index])
 
         # now continue saving the train and test sets
         np.save(features_template.format(name="train", fold=fold, total=options.folds), features[train_index, :])
@@ -91,6 +119,11 @@ def main():
         if labels_used:
             np.save(labels_template.format(name="train", fold=fold, total=options.folds), labels[train_index])
             np.save(labels_template.format(name="test", fold=fold, total=options.folds), labels[test_index])
+
+        # others
+        for other, other_template in zip(others, other_templates):
+            np.save(other_template.format(name="train", fold=fold, total=options.folds), other[train_index])
+            np.save(other_template.format(name="test", fold=fold, total=options.folds), other[test_index])
 
 
 if __name__ == "__main__":
