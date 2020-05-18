@@ -18,7 +18,7 @@ def main():
         directory = os.getcwd()
 
     train_path = os.path.join(directory, "adult.data")
-    test_path = os.path.join(directory, "adult.data")
+    test_path = os.path.join(directory, "adult.test")
 
     wget.download("http://mlr.cs.umass.edu/ml/machine-learning-databases/adult/adult.data", train_path)
     print()

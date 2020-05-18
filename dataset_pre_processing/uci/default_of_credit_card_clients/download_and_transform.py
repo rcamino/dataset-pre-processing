@@ -22,7 +22,7 @@ def main():
     csv_path = os.path.join(directory, "default of credit card clients.csv")
 
     wget.download(
-        "https://archive.ics.uci.edu/ml/machine-learning-databases/00350/default%20of%20credit%20card%20clients.xls",
+        "https://archive.ics.uci.edu/ml/machine-learning-databases/00350/default of credit card clients.xls",
         excel_path
     )
     print()
