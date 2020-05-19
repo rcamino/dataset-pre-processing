@@ -194,7 +194,7 @@ def transform(input_path, features_path, labels_path, metadata_path, scaler_path
 
     # scale
     if scaler_path is not None:
-        features, labels = scale_and_save_scaler(features, scaler_path, labels=labels)
+        features = scale_and_save_scaler(features, scaler_path)
 
     # add distributions to the metadata
     update_feature_distributions(metadata, features)
